@@ -4,3 +4,5 @@
 *.jar
 *.war
 *.ear
+/Odc-client/nbproject/private/
+/Odc-client/build/
