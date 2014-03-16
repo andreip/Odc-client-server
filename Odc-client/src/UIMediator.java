@@ -13,11 +13,15 @@ import javax.swing.JProgressBar;
  */
 public class UIMediator {
     TransfersTableModel transfersTableModel;
-    
-    public UIMediator() {
-        
+    /* Add an instance so the mediator becomes a singleton. */
+    private static UIMediator instance = null;
+
+    public static UIMediator getInstance() {
+        if (instance == null)
+            instance = new UIMediator();
+        return instance;
     }
-    
+
     void registerTransfersTableModel(TransfersTableModel transfersTableModel) {
         this.transfersTableModel = transfersTableModel;
         this.transfersTableModel.addRow(new Object[]{"Ana", "Ion", "info.txt", new JProgressBar(), "Completed."});

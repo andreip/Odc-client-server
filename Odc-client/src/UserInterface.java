@@ -139,7 +139,7 @@ public class UserInterface extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new UserInterface(new UIMediator()).setVisible(true);
+                new UserInterface(UIMediator.getInstance()).setVisible(true);
             }
         });
     }

@@ -14,8 +14,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        UIMediator uiMediator = new UIMediator();
+        UIMediator uiMediator = UIMediator.getInstance();
+
         UserInterface ui = new UserInterface(uiMediator);
         ui.setVisible(true);
         ui.setLocationRelativeTo(null);
