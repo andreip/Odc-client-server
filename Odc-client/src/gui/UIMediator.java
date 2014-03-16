@@ -1,4 +1,7 @@
+package gui;
 
+
+import models.TransfersTableModel;
 import javax.swing.JProgressBar;
 
 /*
@@ -22,7 +25,7 @@ public class UIMediator {
         return instance;
     }
 
-    void registerTransfersTableModel(TransfersTableModel transfersTableModel) {
+    public void registerTransfersTableModel(TransfersTableModel transfersTableModel) {
         this.transfersTableModel = transfersTableModel;
         this.transfersTableModel.addRow(new Object[]{"Ana", "Ion", "info.txt", new JProgressBar(), "Completed."});
         System.out.println("added");

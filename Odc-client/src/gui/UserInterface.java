@@ -1,4 +1,8 @@
+package gui;
 
+
+import models.TransfersTableModel;
+import models.UserListModel;
 import java.awt.EventQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;

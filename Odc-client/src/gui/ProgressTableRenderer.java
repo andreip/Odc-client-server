@@ -1,3 +1,5 @@
+package gui;
+
 
 import java.awt.Component;
 import java.util.LinkedList;

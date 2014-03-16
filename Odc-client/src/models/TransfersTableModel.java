@@ -1,4 +1,7 @@
+package models;
 
+
+import gui.UIMediator;
 import javax.swing.table.DefaultTableModel;
 
 /*
