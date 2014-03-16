@@ -27,7 +27,7 @@ import javax.swing.WindowConstants;
  */
 public class UserInterface extends JFrame {
 
-    UIMediator uiMediator = new UIMediator();
+    UIMediator uiMediator;
     /**
      * Creates new form GUI
      */
