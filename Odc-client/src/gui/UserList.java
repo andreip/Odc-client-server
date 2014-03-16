@@ -6,9 +6,10 @@
 
 package gui;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import javax.swing.JList;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -16,18 +17,20 @@ import javax.swing.JList;
  */
 public class UserList extends JList {
     UIMediator uimed;
+    int lastSelectedIndex = -1;
 
     public UserList(final UIMediator uimed) {
         this.uimed = uimed;
+        this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        /* Catch doble-click event on user list. This
-         * will show the user's files.
+        /* Catch selection event on user list. This
+         * will show the selected user's files.
          */
-        this.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                System.out.println("Clicked on users");
-                if (e.getClickCount() == 2 && !e.isConsumed()) {
-                    e.consume();
+        this.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent le) {
+                int index = UserList.this.getSelectedIndex();
+                if (index != lastSelectedIndex) {
+                    lastSelectedIndex = index;
                     String userName = (String) UserList.this.getSelectedValue();
                     uimed.setCurrentUserFiles(userName);
                 }
