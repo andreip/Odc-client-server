@@ -15,9 +15,8 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        GUI g = new GUI();
-        g.setVisible(true);
-        g.setLocationRelativeTo(null);
+        UserInterface ui = new UserInterface();
+        ui.setVisible(true);
+        ui.setLocationRelativeTo(null);
     }
-    
 }
