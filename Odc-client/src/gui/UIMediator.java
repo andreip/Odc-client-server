@@ -50,4 +50,16 @@ public class UIMediator {
     public void registerStatusLabel(JLabel status) {
         this.status = status;
     }
+
+    public void userOn(String username) {
+        if (this.userListModel != null) {
+            this.userListModel.addElement(username);
+        }
+    }
+
+    public void updateState(String state) {
+        if (this.status != null) {
+            this.status.setText(state);
+        }
+    }
 }

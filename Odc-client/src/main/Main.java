@@ -20,6 +20,8 @@ public class Main {
      */
     public static void main(String[] args) {
         UIMediator uiMediator = UIMediator.getInstance();
+        Mediator mediator = new Mediator(uiMediator);
+        mediator.execute();
 
         UserInterface ui = new UserInterface(uiMediator);
         ui.setVisible(true);
