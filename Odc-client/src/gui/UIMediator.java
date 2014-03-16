@@ -23,7 +23,6 @@ public class UIMediator {
 
     private TransfersTableModel transfersTableModel;
     private UserListModel userListModel;
-    private UserFilesModel userFilesModel;
     private UserFilesTreeModel userFilesTreeModel;
     private HashMap<String, TreeNode> userFilesMap =
         new HashMap<String, TreeNode>();
@@ -45,12 +44,6 @@ public class UIMediator {
         this.addUser("user1");
         this.addUser("user2");
         System.out.println("added users");
-    }
-    public void registerUserFilesModel(UserFilesModel userFilesModel) {
-        this.userFilesModel = userFilesModel;
-        this.userFilesModel.addElement("file1");
-        this.userFilesModel.addElement("file2");
-        System.out.println("added files for user");
     }
     public void registerUserFilesTreeModel(UserFilesTreeModel userFilesTreeModel) {
         this.userFilesTreeModel = userFilesTreeModel;
