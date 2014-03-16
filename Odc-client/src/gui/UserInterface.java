@@ -1,13 +1,12 @@
 package gui;
 
 
+import java.awt.Component;
 import models.TransfersTableModel;
 import models.*;
 
-import java.awt.EventQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.AbstractListModel;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,6 +18,7 @@ import javax.swing.JTable;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.table.TableCellRenderer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -96,7 +96,14 @@ public class UserInterface extends JFrame {
 
         transfersTable.setModel(new TransfersTableModel(uiMediator));
         transfersTable.setDefaultRenderer(JProgressBar.class,
-                new ProgressTableRenderer());
+                new TableCellRenderer() {
+                        @Override
+                        public Component getTableCellRendererComponent(
+                                JTable table, Object value, boolean isSelected,
+                                boolean hasFocus, int row, int column) {
+                            return (JProgressBar) value;
+                        }
+                });
         transfersScrollPane.setViewportView(transfersTable);
 
         leftSplitPane.setRightComponent(transfersScrollPane);
