@@ -129,19 +129,6 @@ public class UserInterface extends JFrame {
         );
 
         pack();
-    }                  
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Create and display the form */
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new UserInterface(UIMediator.getInstance()).setVisible(true);
-            }
-        });
     }
 
     // Variables declaration - do not modify                     
