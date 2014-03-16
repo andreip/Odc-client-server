@@ -19,7 +19,6 @@ public class UserListModel extends DefaultListModel<String> {
     
     public UserListModel(UIMediator uimed) {
         this.uimed = uimed;
-        this.addElement("user1");
-        this.addElement("user2");
+        this.uimed.registerUserListModel(this);
     }
 }

@@ -1,7 +1,7 @@
 package gui;
 
 
-import models.TransfersTableModel;
+import models.*;
 import javax.swing.JProgressBar;
 
 /*
@@ -15,9 +15,11 @@ import javax.swing.JProgressBar;
  * @author Mariana
  */
 public class UIMediator {
-    TransfersTableModel transfersTableModel;
     /* Add an instance so the mediator becomes a singleton. */
     private static UIMediator instance = null;
+
+    private TransfersTableModel transfersTableModel;
+    private UserListModel userListModel;
 
     public static UIMediator getInstance() {
         if (instance == null)
@@ -29,5 +31,11 @@ public class UIMediator {
         this.transfersTableModel = transfersTableModel;
         this.transfersTableModel.addRow(new Object[]{"Ana", "Ion", "info.txt", new JProgressBar(), "Completed."});
         System.out.println("added");
+    }
+    public void registerUserListModel(UserListModel userListModel) {
+        this.userListModel = userListModel;
+        this.userListModel.addElement("user1");
+        this.userListModel.addElement("user2");
+        System.out.println("added users");
     }
 }
