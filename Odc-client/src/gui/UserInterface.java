@@ -16,9 +16,11 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.JTree;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -70,7 +72,8 @@ public class UserInterface extends JFrame {
         mainSplitPane = new JSplitPane();
         leftSplitPane = new JSplitPane();
         filesScrollPane = new JScrollPane();
-        filesList = new JList();
+        /* TODO: actually need to set null here at the start. */
+        filesList = new JTree(new UserFilesTreeModel(new DefaultMutableTreeNode("Root Node")));
         transfersScrollPane = new JScrollPane();
         transfersTable = new JTable();
         usersScrollPane = new JScrollPane();
@@ -89,7 +92,6 @@ public class UserInterface extends JFrame {
         leftSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
         leftSplitPane.setResizeWeight(0.5);
 
-        filesList.setModel(new UserFilesModel(uiMediator));
         filesScrollPane.setViewportView(filesList);
 
         leftSplitPane.setLeftComponent(filesScrollPane);
@@ -129,7 +131,7 @@ public class UserInterface extends JFrame {
     }
 
     // Variables declaration - do not modify                     
-    private JList filesList;
+    private JTree filesList;
     private JScrollPane filesScrollPane;
     private JSplitPane leftSplitPane;
     private JSplitPane mainSplitPane;
