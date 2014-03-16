@@ -80,7 +80,8 @@ public class UserInterface extends JFrame {
         setMinimumSize(new java.awt.Dimension(600, 400));
         setPreferredSize(new java.awt.Dimension(600, 400));
 
-        statusLabel.setText("jLabel1");
+        statusLabel.setText("");
+        uiMediator.registerStatusLabel(statusLabel);
 
         mainSplitPane.setDividerLocation(480);
         mainSplitPane.setResizeWeight(1.0);

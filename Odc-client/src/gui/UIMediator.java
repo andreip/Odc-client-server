@@ -1,6 +1,7 @@
 package gui;
 
 
+import javax.swing.JLabel;
 import models.*;
 import javax.swing.JProgressBar;
 
@@ -21,7 +22,7 @@ public class UIMediator {
     private TransfersTableModel transfersTableModel;
     private UserListModel userListModel;
     private UserFilesModel userFilesModel;
-
+    private JLabel status;
 
     public static UIMediator getInstance() {
         if (instance == null)
@@ -45,5 +46,8 @@ public class UIMediator {
         this.userFilesModel.addElement("file1");
         this.userFilesModel.addElement("file2");
         System.out.println("added files for user");
+    }
+    public void registerStatusLabel(JLabel status) {
+        this.status = status;
     }
 }
