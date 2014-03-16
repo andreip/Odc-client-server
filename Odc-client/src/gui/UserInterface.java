@@ -4,10 +4,8 @@ package gui;
 import models.TransfersTableModel;
 import models.*;
 
-import java.awt.EventQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.AbstractListModel;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,7 +18,6 @@ import javax.swing.JTree;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -72,8 +69,7 @@ public class UserInterface extends JFrame {
         mainSplitPane = new JSplitPane();
         leftSplitPane = new JSplitPane();
         filesScrollPane = new JScrollPane();
-        /* TODO: actually need to set null here at the start. */
-        filesList = new JTree(new UserFilesTreeModel(new DefaultMutableTreeNode("Root Node")));
+        filesList = new JTree();
         transfersScrollPane = new JScrollPane();
         transfersTable = new JTable();
         usersScrollPane = new JScrollPane();
@@ -92,6 +88,7 @@ public class UserInterface extends JFrame {
         leftSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
         leftSplitPane.setResizeWeight(0.5);
 
+        filesList.setModel(new UserFilesTreeModel(null, uiMediator));
         filesScrollPane.setViewportView(filesList);
 
         leftSplitPane.setLeftComponent(filesScrollPane);
