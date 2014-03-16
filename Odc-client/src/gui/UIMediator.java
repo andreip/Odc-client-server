@@ -57,7 +57,10 @@ public class UIMediator {
      */
     public void addUser(String userName) {
         this.userListModel.addElement(userName);
-        TreeNode root = new DefaultMutableTreeNode(userName);
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(userName);
+        DefaultMutableTreeNode innerFolder = new DefaultMutableTreeNode(userName);
+        innerFolder.add(new DefaultMutableTreeNode(userName + ".txt"));
+        root.add(innerFolder);
         this.userFilesMap.put(userName, root);
     }
     public void setCurrentUserFiles(String userName) {
