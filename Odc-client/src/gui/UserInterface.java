@@ -73,7 +73,7 @@ public class UserInterface extends JFrame {
         transfersScrollPane = new JScrollPane();
         transfersTable = new JTable();
         usersScrollPane = new JScrollPane();
-        usersList = new JList();
+        usersList = new UserList(uiMediator);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(600, 400));

@@ -24,9 +24,11 @@ public class UIMediator {
     private TransfersTableModel transfersTableModel;
     private UserListModel userListModel;
     private UserFilesTreeModel userFilesTreeModel;
-    private HashMap<String, TreeNode> userFilesMap =
-        new HashMap<String, TreeNode>();
+    private HashMap<String, TreeNode> userFilesMap;
 
+    public UIMediator () {
+        userFilesMap = new HashMap<>();
+    }
 
     public static UIMediator getInstance() {
         if (instance == null)
@@ -57,5 +59,9 @@ public class UIMediator {
         this.userListModel.addElement(userName);
         TreeNode root = new DefaultMutableTreeNode(userName);
         this.userFilesMap.put(userName, root);
+    }
+    public void setCurrentUserFiles(String userName) {
+        TreeNode root = this.userFilesMap.get(userName);
+        this.userFilesTreeModel.setRoot(root);
     }
 }
