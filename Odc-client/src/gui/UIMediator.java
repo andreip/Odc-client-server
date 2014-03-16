@@ -3,6 +3,7 @@ package gui;
 
 import java.util.HashMap;
 import models.*;
+import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -21,10 +22,11 @@ public class UIMediator {
     /* Add an instance so the mediator becomes a singleton. */
     private static UIMediator instance = null;
 
+    private HashMap<String, TreeNode> userFilesMap;
+    private JLabel status;
     private TransfersTableModel transfersTableModel;
     private UserListModel userListModel;
     private UserFilesTreeModel userFilesTreeModel;
-    private HashMap<String, TreeNode> userFilesMap;
 
     public UIMediator () {
         userFilesMap = new HashMap<>();
@@ -51,6 +53,9 @@ public class UIMediator {
         this.userFilesTreeModel = userFilesTreeModel;
         System.out.println("register files tree model");
     }
+    public void registerStatusLabel(JLabel status) {
+        this.status = status;
+    }
 
     /* TODO andrei: a user should have some kind of info about
      * its files, a TreeNode.
@@ -63,8 +68,21 @@ public class UIMediator {
         root.add(innerFolder);
         this.userFilesMap.put(userName, root);
     }
+
     public void setCurrentUserFiles(String userName) {
         TreeNode root = this.userFilesMap.get(userName);
         this.userFilesTreeModel.setRoot(root);
+    }
+
+    public void userOn(String username) {
+        if (this.userListModel != null) {
+            this.addUser(username);
+        }
+    }
+
+    public void updateState(String state) {
+        if (this.status != null) {
+            this.status.setText(state);
+        }
     }
 }

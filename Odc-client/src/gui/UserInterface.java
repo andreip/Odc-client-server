@@ -1,6 +1,7 @@
 package gui;
 
 
+import java.awt.Component;
 import models.TransfersTableModel;
 import models.*;
 
@@ -18,6 +19,7 @@ import javax.swing.JTree;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.table.TableCellRenderer;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -79,7 +81,8 @@ public class UserInterface extends JFrame {
         setMinimumSize(new java.awt.Dimension(600, 400));
         setPreferredSize(new java.awt.Dimension(600, 400));
 
-        statusLabel.setText("jLabel1");
+        statusLabel.setText("");
+        uiMediator.registerStatusLabel(statusLabel);
 
         mainSplitPane.setDividerLocation(480);
         mainSplitPane.setResizeWeight(1.0);
@@ -95,7 +98,14 @@ public class UserInterface extends JFrame {
 
         transfersTable.setModel(new TransfersTableModel(uiMediator));
         transfersTable.setDefaultRenderer(JProgressBar.class,
-                new ProgressTableRenderer());
+                new TableCellRenderer() {
+                        @Override
+                        public Component getTableCellRendererComponent(
+                                JTable table, Object value, boolean isSelected,
+                                boolean hasFocus, int row, int column) {
+                            return (JProgressBar) value;
+                        }
+                });
         transfersScrollPane.setViewportView(transfersTable);
 
         leftSplitPane.setRightComponent(transfersScrollPane);
