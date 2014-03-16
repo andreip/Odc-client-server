@@ -102,11 +102,7 @@ public class UserInterface extends JFrame {
 
         mainSplitPane.setLeftComponent(leftSplitPane);
 
-        usersList.setModel(new AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
+        usersList.setModel(new UserListModel(uiMediator));
         usersScrollPane.setViewportView(usersList);
 
         mainSplitPane.setRightComponent(usersScrollPane);
