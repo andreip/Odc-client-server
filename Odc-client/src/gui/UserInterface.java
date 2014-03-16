@@ -2,7 +2,8 @@ package gui;
 
 
 import models.TransfersTableModel;
-import models.UserListModel;
+import models.*;
+
 import java.awt.EventQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -88,11 +89,7 @@ public class UserInterface extends JFrame {
         leftSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
         leftSplitPane.setResizeWeight(0.5);
 
-        filesList.setModel(new AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
+        filesList.setModel(new UserFilesModel(uiMediator));
         filesScrollPane.setViewportView(filesList);
 
         leftSplitPane.setLeftComponent(filesScrollPane);

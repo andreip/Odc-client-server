@@ -20,6 +20,8 @@ public class UIMediator {
 
     private TransfersTableModel transfersTableModel;
     private UserListModel userListModel;
+    private UserFilesModel userFilesModel;
+
 
     public static UIMediator getInstance() {
         if (instance == null)
@@ -37,5 +39,11 @@ public class UIMediator {
         this.userListModel.addElement("user1");
         this.userListModel.addElement("user2");
         System.out.println("added users");
+    }
+    public void registerUserFilesModel(UserFilesModel userFilesModel) {
+        this.userFilesModel = userFilesModel;
+        this.userFilesModel.addElement("file1");
+        this.userFilesModel.addElement("file2");
+        System.out.println("added files for user");
     }
 }
