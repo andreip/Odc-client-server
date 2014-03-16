@@ -7,13 +7,13 @@ import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
-import javax.swing.table.DefaultTableModel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -27,10 +27,12 @@ import javax.swing.table.DefaultTableModel;
  */
 public class UserInterface extends JFrame {
 
+    UIMediator uiMediator = new UIMediator();
     /**
      * Creates new form GUI
      */
-    public UserInterface() {
+    public UserInterface(UIMediator uiMediator) {
+        this.uiMediator = uiMediator;
         initComponents();
         
         try {
@@ -91,17 +93,9 @@ public class UserInterface extends JFrame {
 
         leftSplitPane.setLeftComponent(filesScrollPane);
 
-        transfersTable.setModel(new DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
+        transfersTable.setModel(new TransfersTableModel(uiMediator));
+        transfersTable.setDefaultRenderer(JProgressBar.class,
+                new ProgressTableRenderer());
         transfersScrollPane.setViewportView(transfersTable);
 
         leftSplitPane.setRightComponent(transfersScrollPane);
@@ -145,7 +139,7 @@ public class UserInterface extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new UserInterface().setVisible(true);
+                new UserInterface(new UIMediator()).setVisible(true);
             }
         });
     }

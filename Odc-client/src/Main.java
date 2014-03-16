@@ -15,7 +15,8 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        UserInterface ui = new UserInterface();
+        UIMediator uiMediator = new UIMediator();
+        UserInterface ui = new UserInterface(uiMediator);
         ui.setVisible(true);
         ui.setLocationRelativeTo(null);
     }
