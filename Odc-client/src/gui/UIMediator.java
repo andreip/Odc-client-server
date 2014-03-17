@@ -30,6 +30,7 @@ public class UIMediator {
     private TransfersTableModel transfersTableModel;
     private UserListModel userListModel;
     private UserFilesTreeModel userFilesTreeModel;
+    private UserInterface ui;
 
     public UIMediator () {
         userFilesMap = new HashMap<>();
@@ -58,6 +59,9 @@ public class UIMediator {
     }
     public void registerStatusLabel(JLabel status) {
         this.status = status;
+    }
+    public void registerUserInterface(UserInterface ui) {
+        this.ui = ui;
     }
 
     /* TODO andrei: a user should have some kind of info about
@@ -115,5 +119,9 @@ public class UIMediator {
         if (this.transfersTableModel != null) {
             this.transfersTableModel.updateTransferState(id, state);
         }
+    }
+    
+    public void repaintUI() {
+        this.ui.repaint();
     }
 }

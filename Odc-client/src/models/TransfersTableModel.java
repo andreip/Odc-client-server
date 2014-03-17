@@ -61,7 +61,7 @@ public class TransfersTableModel extends DefaultTableModel {
     public void updateTransferValue(int id, int value) {
         progressBars.get(id).setValue(value);
         System.out.println("------ " + value);
-        progressBars.get(id).repaint();
+        this.uiMediator.repaintUI();
         progressBars.get(id).update(progressBars.get(id).getGraphics());
     }
 

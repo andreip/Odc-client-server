@@ -39,6 +39,7 @@ public class UserInterface extends JFrame {
      */
     public UserInterface(UIMediator uiMediator) {
         this.uiMediator = uiMediator;
+        this.uiMediator.registerUserInterface(this);
         initComponents();
         
         try {
