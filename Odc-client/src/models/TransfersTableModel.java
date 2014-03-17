@@ -2,7 +2,12 @@ package models;
 
 
 import gui.UIMediator;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import javax.swing.JProgressBar;
 import javax.swing.table.DefaultTableModel;
+import main.TransferInfo;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,6 +21,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TransfersTableModel extends DefaultTableModel {
     UIMediator uiMediator;
+    private List<TransferInfo> transfers;
+    private HashMap<Integer, JProgressBar> progressBars;
 
     public TransfersTableModel(UIMediator uiMediator) {
         this.uiMediator = uiMediator;
@@ -25,6 +32,8 @@ public class TransfersTableModel extends DefaultTableModel {
         this.addColumn("Progress");
         this.addColumn("Status");
         this.uiMediator.registerTransfersTableModel(this);
+        progressBars = new HashMap<>();
+        transfers = new LinkedList<>();
     }
     
     @Override
@@ -37,8 +46,26 @@ public class TransfersTableModel extends DefaultTableModel {
         return getValueAt(0, c).getClass();
     }
 
-    @Override
-    public void addRow(Object[] rowData) {
-        super.addRow(rowData); //To change body of generated methods, choose Tools | Templates.
+    public void addRow(TransferInfo data) {
+        JProgressBar bar = new JProgressBar(0, data.filesize);
+        super.addRow(new Object[] { data.userFrom,
+                                    data.userTo,
+                                    data.filename,
+                                    bar,
+                                    data.state });
+        transfers.add(data);
+        data.id = transfers.indexOf(data);
+        progressBars.put(data.id, bar);
+    }
+
+    public void updateTransferValue(int id, int value) {
+        progressBars.get(id).setValue(value);
+        System.out.println("------ " + value);
+        progressBars.get(id).repaint();
+        progressBars.get(id).update(progressBars.get(id).getGraphics());
+    }
+
+    public void updateTransferState(int id, String state) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

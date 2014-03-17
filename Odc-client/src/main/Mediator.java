@@ -10,6 +10,7 @@ import gui.UIMediator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 /**
@@ -19,6 +20,7 @@ import javax.swing.SwingWorker;
 public class Mediator extends SwingWorker<Object, Integer> {
     private static final int DELAY = 1000;
     UIMediator uiMediator;
+    TransferInfo ti = new TransferInfo();
     
     public Mediator(UIMediator uiMediator) {
         this.uiMediator = uiMediator;
@@ -26,13 +28,29 @@ public class Mediator extends SwingWorker<Object, Integer> {
     
     @Override
     protected Integer doInBackground() {
+        ti.filename = "test.txt";
+        ti.filesize = 10;
+        ti.state = "";
+        ti.userFrom = "Ana";
+        ti.userTo = "Ion";
+        System.out.println("hellooooo");
         while (true) {
             try {
-                uiMediator.userOn("Ana");
-                uiMediator.updateState("Receiving user list...");
-                publish(1);
-                setProgress(1);
                 Thread.sleep(DELAY);
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        uiMediator.newOutgoingTransfer(ti);
+                    }
+                });
+                
+                System.out.println("before for");
+                for (int i = 0; i <= ti.filesize; i += 1) {
+                    publish(i);
+                    System.out.println("+++ " + Thread.currentThread());
+                    Thread.sleep(DELAY);
+                }
             } catch (InterruptedException ex) {
                 Logger.getLogger(Mediator.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -41,9 +59,9 @@ public class Mediator extends SwingWorker<Object, Integer> {
 
     @Override
     protected void process(List<Integer> chunks) {
-            for (Integer chunk : chunks) {
-                    System.out.println(chunk);
-            }
+        final Integer chunk = chunks.get(chunks.size() - 1);
+        uiMediator.updateTransferValue(ti.id, chunk);
+        System.out.println("--- " + Thread.currentThread());
     }
 
     @Override

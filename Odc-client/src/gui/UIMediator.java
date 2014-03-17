@@ -2,11 +2,14 @@ package gui;
 
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import models.*;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
+import main.TransferInfo;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -61,17 +64,21 @@ public class UIMediator {
      * its files, a TreeNode.
      */
     public void addUser(String userName) {
-        this.userListModel.addElement(userName);
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode(userName);
-        DefaultMutableTreeNode innerFolder = new DefaultMutableTreeNode(userName);
-        innerFolder.add(new DefaultMutableTreeNode(userName + ".txt"));
-        root.add(innerFolder);
-        this.userFilesMap.put(userName, root);
+        if (this.userListModel != null) {
+            this.userListModel.addElement(userName);
+            DefaultMutableTreeNode root = new DefaultMutableTreeNode(userName);
+            DefaultMutableTreeNode innerFolder = new DefaultMutableTreeNode(userName);
+            innerFolder.add(new DefaultMutableTreeNode(userName + ".txt"));
+            root.add(innerFolder);
+            this.userFilesMap.put(userName, root);
+        }
     }
 
     public void setCurrentUserFiles(String userName) {
-        TreeNode root = this.userFilesMap.get(userName);
-        this.userFilesTreeModel.setRoot(root);
+        if (this.userFilesTreeModel != null) {
+            TreeNode root = this.userFilesMap.get(userName);
+            this.userFilesTreeModel.setRoot(root);
+        }
     }
 
     public void userOn(String username) {
@@ -83,6 +90,30 @@ public class UIMediator {
     public void updateState(String state) {
         if (this.status != null) {
             this.status.setText(state);
+        }
+    }
+    
+    /* Another user wants to download a file from this user. */
+    public void newOutgoingTransfer(TransferInfo info) {
+        if (this.transfersTableModel != null) {
+            this.transfersTableModel.addRow(info);
+        }
+    }
+    
+    /* This user wants to download a file from another user. */
+    public TransferInfo newIncomingTransfer() {
+        return null;
+    }
+    
+    public void updateTransferValue(int id, int value) {
+        if (this.transfersTableModel != null) {
+            this.transfersTableModel.updateTransferValue(id, value);
+        }
+    }
+    
+    public void updateTransferState(int id, String state) {
+        if (this.transfersTableModel != null) {
+            this.transfersTableModel.updateTransferState(id, state);
         }
     }
 }
