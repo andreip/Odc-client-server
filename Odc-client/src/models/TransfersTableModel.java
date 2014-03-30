@@ -35,12 +35,12 @@ public class TransfersTableModel extends DefaultTableModel {
         progressBars = new HashMap<>();
         transfers = new LinkedList<>();
     }
-    
+
     @Override
     public boolean isCellEditable(int row, int column) {
         return false;
     }
-    
+
     @Override
     public Class getColumnClass(int c) {
         return getValueAt(0, c).getClass();
@@ -60,12 +60,17 @@ public class TransfersTableModel extends DefaultTableModel {
 
     public void updateTransferValue(int id, int value) {
         progressBars.get(id).setValue(value);
-        System.out.println("------ " + value);
+        if (value == 1) {
+            updateTransferState(id, "Transfering...");
+        }
+        if (progressBars.get(id).getMaximum() == value) {
+            updateTransferState(id, "Completed.");
+        }
         this.uiMediator.repaintUI();
         progressBars.get(id).update(progressBars.get(id).getGraphics());
     }
 
     public void updateTransferState(int id, String state) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        super.setValueAt(state, id, 4);
     }
 }

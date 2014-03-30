@@ -21,6 +21,7 @@ public class UserList extends JList {
 
     public UserList(final UIMediator uimed) {
         this.uimed = uimed;
+        uimed.registerUserList(this);
         this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         /* Catch selection event on user list. This
@@ -36,5 +37,9 @@ public class UserList extends JList {
                 }
             }
         });
+    }
+
+    public String getSelectedUser() {
+        return (String)this.getSelectedValue();
     }
 }
