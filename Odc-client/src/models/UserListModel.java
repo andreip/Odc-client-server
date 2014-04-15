@@ -2,23 +2,19 @@ package models;
 
 
 import gui.UIMediator;
-import javax.swing.DefaultListModel;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+import javax.swing.DefaultListModel;
 
 /**
  *
  * @author andrei
  */
 public class UserListModel extends DefaultListModel<String> {
-    UIMediator uimed;
+	private static final long serialVersionUID = 1L;
+	UIMediator uiMediator;
     
-    public UserListModel(UIMediator uimed) {
-        this.uimed = uimed;
-        this.uimed.registerUserListModel(this);
+    public UserListModel(UIMediator uiMediator) {
+        this.uiMediator = uiMediator;
+        this.uiMediator.registerUserListModel(this);
     }
 }

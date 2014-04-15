@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gui;
 
 import javax.swing.JList;
@@ -15,13 +9,14 @@ import javax.swing.event.ListSelectionListener;
  *
  * @author andrei
  */
-public class UserList extends JList {
-    UIMediator uimed;
+public class UserList extends JList<String> {
+	private static final long serialVersionUID = 1L;
+	UIMediator uiMediator;
     int lastSelectedIndex = -1;
 
-    public UserList(final UIMediator uimed) {
-        this.uimed = uimed;
-        uimed.registerUserList(this);
+    public UserList(final UIMediator uiMediator) {
+        this.uiMediator = uiMediator;
+        uiMediator.registerUserList(this);
         this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         /* Catch selection event on user list. This
@@ -33,7 +28,7 @@ public class UserList extends JList {
                 if (index != lastSelectedIndex) {
                     lastSelectedIndex = index;
                     String userName = (String) UserList.this.getSelectedValue();
-                    uimed.setCurrentUserFiles(userName);
+                    uiMediator.setCurrentUserFiles(userName);
                 }
             }
         });
