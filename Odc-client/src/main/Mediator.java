@@ -1,39 +1,129 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package main;
 
 import gui.UIMediator;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Scanner;
+
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
+
+import network.Network;
+import network.NetworkWorker;
+
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author Mariana
  */
-public class Mediator extends SwingWorker<Object, Pair> {
-    private static final int DELAY = 1000;
+public class Mediator implements Runnable {
+	// Logger for this class 
+	static Logger logger = Logger.getLogger(Mediator.class);
+
     UIMediator uiMediator;
+    Network netInterface;
+    NetworkWorker worker;
+    public String username;
+    public String homeDir;
+    
     int command = 0;
     HashMap<TransferInfo, Integer> transfers = new HashMap<>();
-    List<String> users = new LinkedList<>();
+    Map<String, Pair> users = new HashMap<>();
     Random rand = new Random();
 
-    public Mediator(UIMediator uiMediator) {
+    public Mediator(Properties configs, String username, String homeDir) {
+    	this.username = username;
+    	this.homeDir = homeDir;
+    	
+    	// Create a network worker.
+    	worker = new NetworkWorker(this);
+    	new Thread(worker).start();
+    	
+    	// Create a network interface instance.
+    	// Replace default with data from configuration file.
+    	InetAddress hostAddress = null;
+    	int port = 9090;
+    	if (configs.containsKey("host")) {
+    		try {
+				hostAddress = InetAddress.getByName(configs.getProperty("host"));
+			} catch (UnknownHostException e) {
+				logger.error("Unable to read host address " + configs.getProperty("host") + ". Using default.");
+			}
+    	} else {
+    		logger.info("No config entry for host address. Using default.");
+    	}
+    	if (configs.containsKey("port")) {
+    		try {
+    			port = Integer.parseInt(configs.getProperty("port"));
+    		} catch (NumberFormatException e) {
+    			logger.error("Unable to read port number " + configs.getProperty("port") + ". Using default.");
+    		}
+    	} else {
+    		logger.info("No config entry for port number. Using default.");
+    	}
+        try {
+			netInterface = new Network(this, worker, hostAddress, port);
+		} catch (IOException e) {
+			logger.fatal("Unable to instantiate network interface. Error was: " + e.toString() + ".Shutting down...");
+			System.exit(-1);
+		}
+        
+        new Thread(netInterface).start();
+    }
+    
+    public void registerUIMediator(UIMediator uiMediator) {
         this.uiMediator = uiMediator;
         this.uiMediator.registerMediator(this);
     }
+    
+    public TransferInfo newOutgoingTransfer(String toUser, String filePath) {
+    	logger.debug("New outgoing transfer.");
+    	final TransferInfo ti = new TransferInfo();
+        ti.filename = filePath;
+        ti.path = "";
+        ti.filesize = (int)(new File(filePath)).length();
+        ti.state = "Starting...";
+        ti.userFrom = "me";
+        ti.userTo = toUser;
+        transfers.put(ti, 0);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+            	uiMediator.newOutgoingTransfer(ti);
+            }
+        });
+        return ti;
+    }
 
-    @Override
+    public void notifyTransferFilesize(TransferInfo ti) {
+    	final TransferInfo tii = ti;
+    	SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+            	uiMediator.updateTransferFilesize(tii.id, tii.filesize);
+            }
+        });
+    }
+    
+    public void updateTransferValue(TransferInfo ti, final int progress) {
+    	final TransferInfo tii = ti;
+    	SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+            	uiMediator.updateTransferValue(tii.id, progress);
+            }
+        });
+    }
+/*
     protected Integer doInBackground() {
         while (true) {
 
@@ -47,7 +137,7 @@ public class Mediator extends SwingWorker<Object, Pair> {
                             ti.filesize = rand.nextInt(20);
                             ti.state = "Starting...";
                             ti.userFrom = "me";
-                            ti.userTo = users.get(rand.nextInt(users.size() - 1));
+                            //ti.userTo = users.get(rand.nextInt(users.size() - 1));
                             transfers.put(ti, 0);
                             uiMediator.newOutgoingTransfer(ti);
                         }
@@ -84,7 +174,7 @@ public class Mediator extends SwingWorker<Object, Pair> {
                     for (TransferInfo ti : this.transfers.keySet()) {
                         int i = this.transfers.get(ti) + 1;
                         if (i <= ti.filesize) {
-                            publish(new Pair(ti.id, i));
+                            //publish(new Pair(ti.id, i));
                             this.transfers.put(ti, i);
                         }
                     }
@@ -92,39 +182,58 @@ public class Mediator extends SwingWorker<Object, Pair> {
             }
             command += 1;
             try {
-                Thread.sleep(DELAY);
+                Thread.sleep(1000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Mediator.class.getName()).log(Level.SEVERE, null, ex);
+                logger.debug("Thread interrupted.");
             }
         }
     }
-
-    @Override
+*/
     protected void process(List<Pair> chunks) {
         for (Pair chunk : chunks) {
-            uiMediator.updateTransferValue(chunk.transferId, chunk.progress);
+            uiMediator.updateTransferValue((Integer)chunk.first, (Integer)chunk.second);
         }
     }
 
-    @Override
-    protected void done() {
-      if (isCancelled())
-        System.out.println("Cancelled !");
-      else
-        System.out.println("Done !");
+    public void newIncomingTransfer(TransferInfo ti) {
+    	logger.debug("New incoming transfer.");
+    	Pair netInfo = users.get(ti.userFrom);
+        try {
+			this.netInterface.startTransfer(ti, InetAddress.getByName((String) netInfo.first),
+												Integer.parseInt((String) netInfo.second));
+		} catch (NumberFormatException | UnknownHostException e) {
+			e.printStackTrace();
+		}
     }
 
-    public void download(TransferInfo ti) {
-        this.transfers.put(ti, 0);
-    }
+	@Override
+	public void run() {
+		try {
+			Scanner s = new Scanner(new File("res/users"));
+			while (s.hasNext()) {
+				String line = s.nextLine();
+				String[] contents = line.split(" ");
+				String user = contents[0];
+				this.users.put(user, new Pair(contents[1], contents[2]));
+				if (!user.equals(this.username)) {
+					uiMediator.userOn(user);
+				}
+			}
+			s.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		while(true) {}
+	}
 }
 
 class Pair {
-    public Integer transferId;
-    public Integer progress;
+    public Object first;
+    public Object second;
 
-    public Pair(Integer transferId, Integer progress) {
-        this.transferId = transferId;
-        this.progress = progress;
+    public Pair(Object first, Object second) {
+        this.first = first;
+        this.second = second;
     }
 }

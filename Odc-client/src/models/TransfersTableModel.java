@@ -2,25 +2,28 @@ package models;
 
 
 import gui.UIMediator;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.swing.JProgressBar;
 import javax.swing.table.DefaultTableModel;
+
 import main.TransferInfo;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author Mariana
  */
 public class TransfersTableModel extends DefaultTableModel {
-    UIMediator uiMediator;
+	private static final long serialVersionUID = 1L;
+	// Logger for this class 
+	static Logger logger = Logger.getLogger(TransfersTableModel.class);
+	
+	UIMediator uiMediator;
     private List<TransferInfo> transfers;
     private HashMap<Integer, JProgressBar> progressBars;
 
@@ -42,7 +45,7 @@ public class TransfersTableModel extends DefaultTableModel {
     }
 
     @Override
-    public Class getColumnClass(int c) {
+    public Class<?> getColumnClass(int c) {
         return getValueAt(0, c).getClass();
     }
 
@@ -56,6 +59,7 @@ public class TransfersTableModel extends DefaultTableModel {
         transfers.add(data);
         data.id = transfers.indexOf(data);
         progressBars.put(data.id, bar);
+        logger.debug("Row added.");
     }
 
     public void updateTransferValue(int id, int value) {
@@ -68,9 +72,19 @@ public class TransfersTableModel extends DefaultTableModel {
         }
         this.uiMediator.repaintUI();
         progressBars.get(id).update(progressBars.get(id).getGraphics());
+        logger.debug("Transfer value updated.");
+    }
+    
+    public void updateTransferFilesize(int id, int value) {
+        progressBars.get(id).setMaximum(value);
+        updateTransferState(id, "Got filesize...");
+        this.uiMediator.repaintUI();
+        progressBars.get(id).update(progressBars.get(id).getGraphics());
+        logger.debug("Transfer filesize updated.");
     }
 
     public void updateTransferState(int id, String state) {
         super.setValueAt(state, id, 4);
+        logger.debug("Transfer state updated.");
     }
 }
