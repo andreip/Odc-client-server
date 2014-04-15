@@ -8,7 +8,10 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import main.Mediator;
 import main.TransferInfo;
@@ -37,6 +40,9 @@ public class Transfer implements Runnable {
 	
 	private TransferInfo ti;
 
+	// A list of ChangeRequest instances
+	private List<ChangeRequest> changeRequests = new LinkedList<ChangeRequest>();
+
 	// Maps a SocketChannel to a RspHandler
 	private RspHandler rspHandler;
 
@@ -59,10 +65,10 @@ public class Transfer implements Runnable {
 	public boolean newIncomingTransfer(TransferInfo ti) {
 		this.ti = ti;
 
-		String message = "REQ " + mediator.username + " " + ti.filename;
+		String message = "REQ " + mediator.username + " " + ti.path + ti.filename;
 		byte[] data = message.getBytes();
 
-		this.rspHandler = new RspHandler(mediator, ti);
+		this.rspHandler = new RspHandler(this, mediator, ti);
 		// And queue the data we want written
 		this.pendingData = ByteBuffer.wrap(data);
 		
@@ -96,7 +102,18 @@ public class Transfer implements Runnable {
 	public void run() {
 		while (true) {
 			try {
-
+				synchronized(this.changeRequests) {
+					Iterator<ChangeRequest> changes = this.changeRequests.iterator();
+					while (changes.hasNext()) {
+						ChangeRequest change = (ChangeRequest) changes.next();
+						switch(change.type) {
+						case ChangeRequest.CHANGEOPS:
+							SelectionKey key = change.socket.keyFor(this.selector);
+							key.interestOps(change.ops);
+						}
+					}
+					this.changeRequests.clear(); 
+				}
 				logger.debug("Waiting for a new selection.");
 
 				// Wait for an event on one of the registered channels
@@ -139,7 +156,6 @@ public class Transfer implements Runnable {
 		int numRead;
 		try {
 			numRead = socketChannel.read(this.readBuffer);
-			logger.debug("Read: " + new String(this.readBuffer.array()));
 		} catch (IOException e) {
 			// The remote forcibly closed the connection, cancel
 			// the selection key and close the channel.
@@ -178,7 +194,6 @@ public class Transfer implements Runnable {
 		SocketChannel socketChannel = (SocketChannel) key.channel();
 
 		socketChannel.write(this.pendingData);
-		logger.debug("Write: " + new String(this.pendingData.array()));
 		this.pendingData = null;
 		
 		// We wrote away all data, so we're no longer interested
@@ -186,6 +201,20 @@ public class Transfer implements Runnable {
 		// data.
 		key.interestOps(SelectionKey.OP_READ);
 		logger.debug("Data written to socket; key op is now data read.");
+	}
+	
+	 
+	public void send(byte[] data) {
+		synchronized (this.changeRequests) {
+			// Indicate we want the interest ops set changed
+			this.changeRequests.add(new ChangeRequest(socket, ChangeRequest.CHANGEOPS, SelectionKey.OP_WRITE));
+			
+			// And queue the data we want written
+			this.pendingData = ByteBuffer.wrap(data);
+		}
+		
+		// Finally, wake up our selecting thread so it can make the required changes
+		this.selector.wakeup();
 	}
 
 	private void finishConnection(SelectionKey key) throws IOException {

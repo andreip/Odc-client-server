@@ -114,7 +114,6 @@ public class Network implements Runnable {
 		int numRead;
 		try {
 			numRead = socketChannel.read(this.readBuffer);
-			logger.debug("Read: " + new String(this.readBuffer.array()));
 		} catch (IOException e) {
 			// The remote forcibly closed the connection, cancel
 			// the selection key and close the channel.
@@ -147,7 +146,6 @@ public class Network implements Runnable {
 			while (!queue.isEmpty()) {
 				ByteBuffer buf = (ByteBuffer) queue.get(0);
 				socketChannel.write(buf);
-				logger.debug("Write: " + new String(buf.array()));
 				if (buf.remaining() > 0) {
 					// ... or the socket's buffer fills up
 					break;

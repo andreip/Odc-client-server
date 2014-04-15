@@ -1,6 +1,5 @@
 package network;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -43,7 +42,7 @@ public class NetworkWorker implements Runnable {
 		FileChannel fc = null;
 		
 		try {
-			raf = new RandomAccessFile(mediator.homeDir + ti.path + ti.filename, "r");
+			raf = new RandomAccessFile(ti.path + ti.filename, "r");
 			fc = raf.getChannel();
 
 			try {
@@ -53,7 +52,7 @@ public class NetworkWorker implements Runnable {
 					buffer.clear();
 					int count = fc.read(buffer);
 					buffer.flip();
-					logger.debug("Read file contents in buffer: <" + new String(buffer.array()) + ">");
+					mediator.updateTransferValue(ti, (int)fc.position());
 
 					if (count <= 0) {
 						break;
@@ -99,15 +98,15 @@ public class NetworkWorker implements Runnable {
 						dataEvent.server.send(dataEvent.socket, "NACK".getBytes());
 						continue;
 					}
-					ti.filesize = (int) new File(mediator.homeDir + ti.path + ti.filename).length();
 					transfers.put(dataEvent.socket, ti);
 					// Return positive response to sender - we accept sending the file
 					String outMessage = "ACK " + ti.filesize;
 					dataEvent.server.send(dataEvent.socket, outMessage.getBytes());
-					// Map file in memory and send it.
+				} else if (contents[0].equals("ACK")) {
+					TransferInfo ti = transfers.get(dataEvent.socket);
 					queueFileForSending(dataEvent, ti);
 				} else {
-					logger.warn("Buffer doesn't start with know command. Ignore.");
+					logger.warn("Buffer doesn't start with known command. Ignore.");
 				}
 			}
 		}

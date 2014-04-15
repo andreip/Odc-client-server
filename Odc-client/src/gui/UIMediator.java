@@ -143,6 +143,7 @@ public class UIMediator {
         	path += splitPath[i] + "/";
         }
         final String fp = path;
+        logger.debug("File to download has path=" + fp + " and name=" + filename);
         SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {

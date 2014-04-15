@@ -88,9 +88,15 @@ public class Mediator implements Runnable {
     public TransferInfo newOutgoingTransfer(String toUser, String filePath) {
     	logger.debug("New outgoing transfer.");
     	final TransferInfo ti = new TransferInfo();
-        ti.filename = filePath;
-        ti.path = "";
-        ti.filesize = (int)(new File(filePath)).length();
+        String[] splitPath = filePath.split("/");
+        String filename = splitPath[splitPath.length - 1]; // filename is last
+        String path = this.homeDir;
+        for (int i = 0; i < splitPath.length - 1; i++) { // path is all without last
+        	path += splitPath[i] + "/";
+        }
+        ti.filename = filename;
+        ti.path = path;
+        ti.filesize = (int) new File(ti.path + ti.filename).length();
         ti.state = "Starting...";
         ti.userFrom = "me";
         ti.userTo = toUser;

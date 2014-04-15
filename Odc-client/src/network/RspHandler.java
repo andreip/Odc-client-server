@@ -19,13 +19,15 @@ public class RspHandler {
 	private int state;
 	private TransferInfo ti;
 	private Mediator mediator;
+	private Transfer transfer;
 	
 	RandomAccessFile raf = null;
 	FileChannel fc = null;
 	MappedByteBuffer mbb = null;
 	
-	public RspHandler(Mediator mediator, TransferInfo ti) {
+	public RspHandler(Transfer transfer, Mediator mediator, TransferInfo ti) {
 		this.mediator = mediator;
+		this.transfer = transfer;
 		this.ti = ti;
 		this.state = 0;
 	}
@@ -46,11 +48,12 @@ public class RspHandler {
 			state = 1;
 			
 			try {
-				raf = new RandomAccessFile(mediator.homeDir + ti.path + ti.filename, "rw");
+				raf = new RandomAccessFile(mediator.homeDir + ti.filename, "rw");
 				raf.setLength(ti.filesize);
 				fc = raf.getChannel();
 				mbb = fc.map(FileChannel.MapMode.READ_WRITE, 0, fc.size());
 				mediator.notifyTransferFilesize(ti);
+				this.transfer.send("ACK".getBytes());
 			} catch (FileNotFoundException e) {
 				logger.error("Unable to open file. Error was: " + e.toString());
 			} catch (IOException e) {
@@ -66,7 +69,7 @@ public class RspHandler {
 				}
 			}
 		} else {
-			logger.warn("Buffer doesn't start with know command. Ignore.");
+			logger.warn("Buffer doesn't start with known command. Ignore.");
 		}
 
 		return true;
@@ -76,6 +79,14 @@ public class RspHandler {
 			mbb.put(rsp);
 			mediator.updateTransferValue(ti, mbb.position());
 			if (mbb.position() == mbb.limit()) {
+				try {
+					if (fc != null)
+						fc.close();
+					if (raf != null)
+						raf.close();
+				} catch (IOException e) {
+					logger.error("Unable to close file/channel. Error was: " + e.toString());
+				}
 				return false;
 			}
 			return true;
