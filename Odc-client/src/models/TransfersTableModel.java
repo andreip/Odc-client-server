@@ -64,7 +64,7 @@ public class TransfersTableModel extends DefaultTableModel {
 
     public void updateTransferValue(int id, int value) {
         progressBars.get(id).setValue(value);
-        if (value == 1) {
+        if (value > 0) {
             updateTransferState(id, "Transfering...");
         }
         if (progressBars.get(id).getMaximum() == value) {
