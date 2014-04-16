@@ -180,12 +180,6 @@ public class UIMediator {
         }
     }
 
-    public void updateTransferState(int id, String state) {
-        if (this.transfersTableModel != null) {
-            this.transfersTableModel.updateTransferState(id, state);
-        }
-    }
-
     public void repaintUI() {
         this.ui.repaint();
     }
