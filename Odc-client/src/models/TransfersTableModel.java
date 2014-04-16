@@ -59,7 +59,7 @@ public class TransfersTableModel extends DefaultTableModel {
         transfers.add(data);
         data.id = transfers.indexOf(data);
         progressBars.put(data.id, bar);
-        logger.debug("Row added.");
+        logger.debug("Row added - from " + data.userFrom + ", to " + data.userTo + ", " + data.filename);
     }
 
     public void updateTransferValue(int id, int value) {
@@ -70,9 +70,8 @@ public class TransfersTableModel extends DefaultTableModel {
         if (progressBars.get(id).getMaximum() == value) {
             updateTransferState(id, "Completed.");
         }
-        this.uiMediator.repaintUI();
         progressBars.get(id).update(progressBars.get(id).getGraphics());
-        logger.debug("Transfer value updated.");
+        this.uiMediator.repaintUI();
     }
     
     public void updateTransferFilesize(int id, int value) {
@@ -80,11 +79,9 @@ public class TransfersTableModel extends DefaultTableModel {
         updateTransferState(id, "Got filesize...");
         this.uiMediator.repaintUI();
         progressBars.get(id).update(progressBars.get(id).getGraphics());
-        logger.debug("Transfer filesize updated.");
     }
 
     public void updateTransferState(int id, String state) {
         super.setValueAt(state, id, 4);
-        logger.debug("Transfer state updated.");
     }
 }

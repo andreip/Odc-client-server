@@ -48,7 +48,7 @@
  			
  			<!-- Third user -->
 			<sequential>
-	 			<sleep seconds="3"/>
+	 			<sleep seconds="4"/>
 				<java fork="true" classname="main.Main">
 					<arg value="katy"/>
 					<classpath> 
