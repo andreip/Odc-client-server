@@ -71,6 +71,13 @@ public class UIMediator {
     public void registerUserInterface(UserInterface ui) {
         this.ui = ui;
     }
+    
+    public String getUsername() {
+    	if (this.mediator != null) {
+    		return this.mediator.username;
+    	}
+    	return "";
+    }
 
     /* TODO andrei: a user should have some kind of info about
      * its files, a TreeNode.

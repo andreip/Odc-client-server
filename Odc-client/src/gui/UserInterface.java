@@ -74,6 +74,7 @@ public class UserInterface extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(600, 400));
         setPreferredSize(new java.awt.Dimension(600, 400));
+        setTitle("Welcome - " + this.uiMediator.getUsername());
 
         statusLabel.setText("");
         uiMediator.registerStatusLabel(statusLabel);
