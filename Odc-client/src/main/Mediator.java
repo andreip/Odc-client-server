@@ -32,8 +32,8 @@ public class Mediator implements Runnable {
     UIMediator uiMediator;
     Network netInterface;
     NetworkWorker worker;
-    public String username;
-    public String homeDir;
+    private String username;
+    private String homeDir;
     
     int command = 0;
     HashMap<TransferInfo, Integer> transfers = new HashMap<>();
@@ -78,6 +78,14 @@ public class Mediator implements Runnable {
 		}
         
         new Thread(netInterface).start();
+    }
+    
+    public String getUsername() {
+    	return this.username;
+    }
+    
+    public String getHomedir() {
+    	return this.homeDir;
     }
     
     public void registerUIMediator(UIMediator uiMediator) {

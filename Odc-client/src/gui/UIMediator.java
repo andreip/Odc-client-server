@@ -74,7 +74,7 @@ public class UIMediator {
     
     public String getUsername() {
     	if (this.mediator != null) {
-    		return this.mediator.username;
+    		return this.mediator.getUsername();
     	}
     	return "";
     }

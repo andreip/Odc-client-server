@@ -48,7 +48,7 @@ public class RspHandler {
 			state = 1;
 			
 			try {
-				raf = new RandomAccessFile(mediator.homeDir + ti.filename, "rw");
+				raf = new RandomAccessFile(mediator.getHomedir() + ti.filename, "rw");
 				raf.setLength(ti.filesize);
 				fc = raf.getChannel();
 				mbb = fc.map(FileChannel.MapMode.READ_WRITE, 0, fc.size());

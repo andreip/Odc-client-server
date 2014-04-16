@@ -8,7 +8,6 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,7 +64,7 @@ public class Transfer implements Runnable {
 	public boolean newIncomingTransfer(TransferInfo ti) {
 		this.ti = ti;
 
-		String message = "REQ " + mediator.username + " " + ti.path + ti.filename;
+		String message = "REQ " + mediator.getUsername() + " " + ti.path + ti.filename;
 		byte[] data = message.getBytes();
 
 		this.rspHandler = new RspHandler(this, mediator, ti);
