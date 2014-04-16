@@ -28,7 +28,6 @@ public class UIMediator {
 	static Logger logger = Logger.getLogger(UIMediator.class);
 
     private Mediator mediator;
-    private HashMap<String, TreeNode> userFilesMap;
     private JLabel status;
     private TransfersTableModel transfersTableModel;
     private UserListModel userListModel;
@@ -36,9 +35,7 @@ public class UIMediator {
     private UserFilesTreeModel userFilesTreeModel;
     private UserInterface ui;
 
-    public UIMediator () {
-        userFilesMap = new HashMap<>();
-    }
+    private UIMediator () {}
 
     public static UIMediator getInstance() {
         if (instance == null)
@@ -79,15 +76,9 @@ public class UIMediator {
     	return "";
     }
 
-    /* TODO andrei: a user should have some kind of info about
-     * its files, a TreeNode.
-     * TODO mariana: should get the file structure from the webservice.
-     */
     public void addUser(String username) {
         if (this.userListModel != null) {
             this.userListModel.addElement(username);
-            DefaultMutableTreeNode root = getUserHomeRoot(new File("res/" + username));
-            this.userFilesMap.put(username, root);
         }
     }
 
@@ -101,16 +92,16 @@ public class UIMediator {
         return rootNode;
     }
 
-    public void removeUser(String userName) {
+    public void removeUser(String username) {
         if (this.userListModel != null) {
-            this.userListModel.removeElement(userName);
-            this.userFilesMap.remove(userName);
+            this.userListModel.removeElement(username);
         }
     }
 
-    public void setCurrentUserFiles(String userName) {
+    /* TODO mariana: should get the file structure from the webservice. */
+    public void setCurrentUserFiles(String username) {
         if (this.userFilesTreeModel != null) {
-            TreeNode root = this.userFilesMap.get(userName);
+            TreeNode root = getUserHomeRoot(new File("res/" + username));
             this.userFilesTreeModel.setRoot(root);
         }
     }
