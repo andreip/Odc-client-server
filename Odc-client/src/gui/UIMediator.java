@@ -126,7 +126,7 @@ public class UIMediator {
 
     /* Another user wants to download a file from this user. */
     public void newOutgoingTransfer(TransferInfo info) {
-        if (this.transfersTableModel != null) {
+        if (this.transfersTableModel != null && info != null) {
             this.transfersTableModel.addRow(info);
         }
     }
