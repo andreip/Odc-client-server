@@ -1,16 +1,22 @@
 package tests;
 
+import java.lang.reflect.InvocationTargetException;
+
+import javax.swing.SwingUtilities;
+
 import main.Mediator;
 import main.TransferInfo;
 import models.TransfersTableModel;
 import models.UserListModel;
 
 import org.apache.log4j.Logger;
+import org.mockito.ArgumentCaptor;
 import org.powermock.reflect.Whitebox;
 
 import static org.mockito.Mockito.*;
 
 import gui.UIMediator;
+import gui.UserList;
 import junit.framework.TestCase;
 
 public class TestUIMediator extends TestCase {
@@ -75,5 +81,23 @@ public class TestUIMediator extends TestCase {
 		verify(transferMock, times(1)).updateTransferValue(0, 0);
 		uimed.updateTransferFilesize(0, 10);
 		verify(transferMock, times(1)).updateTransferFilesize(0, 10);
+	}
+
+	public void testPathParsingIncomingTransfer() throws InvocationTargetException, InterruptedException {
+		UserList userList = mock(UserList.class);
+		uimed.registerUserList(userList);
+		when(userList.getSelectedUser()).thenReturn("user");
+
+		final ArgumentCaptor<TransferInfo> arg = ArgumentCaptor.forClass(TransferInfo.class);
+		uimed.newIncomingTransfer("chris/path/to/file");
+
+		verify(medMock, times(0)).newIncomingTransfer(arg.capture());
+		SwingUtilities.invokeAndWait(new Runnable() {
+			public void run() {
+				verify(medMock, times(1)).newIncomingTransfer(arg.capture());
+				assertEquals(arg.getValue().filename, "file");
+				assertEquals(arg.getValue().path, "path/to/");
+			};
+		});
 	}
 }
