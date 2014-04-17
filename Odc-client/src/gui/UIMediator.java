@@ -2,9 +2,9 @@ package gui;
 
 
 import java.io.File;
-import java.util.HashMap;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -169,6 +169,14 @@ public class UIMediator {
         if (this.transfersTableModel != null) {
             this.transfersTableModel.updateTransferFilesize(id, value);
         }
+    }
+    public void notifyError(final String message) {
+	    SwingUtilities.invokeLater(new Runnable() {
+	        @Override
+	        public void run() {
+	        	JOptionPane.showMessageDialog(UIMediator.this.ui, message);
+	        }
+	    });
     }
 
     public void repaintUI() {

@@ -60,9 +60,11 @@ public class NetworkWorker implements Runnable {
 					dataEvent.server.send(dataEvent.socket, buffer.array());
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				mediator.notifyNetworkError("Unable to send file! Transfer canceled.");
+				logger.error("Unable to read file for sending. Error was: " + e.toString());
 			}
 		} catch (IOException e) {
+			mediator.notifyNetworkError("Unable to send file! Transfer canceled.");
 			logger.error("Unable to finish queueing the file for sending. Error was: " + e.toString());
 		} finally {
 			try {

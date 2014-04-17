@@ -84,7 +84,8 @@ public class Network implements Runnable {
 			t.newIncomingTransfer(ti);
 			new Thread(t).start();
 		} catch (IOException e) {
-			e.printStackTrace();
+			mediator.notifyNetworkError("Unable to connect to user! Download canceled.");
+			logger.error("Unable to connect to user. Error was: " + e.toString());
 		}
 		
 	}
@@ -119,6 +120,7 @@ public class Network implements Runnable {
 			// the selection key and close the channel.
 			key.cancel();
 			socketChannel.close();
+			mediator.notifyNetworkError("Unable to read from user! Connection canceled.");
 			return;
 		}
 
@@ -127,6 +129,7 @@ public class Network implements Runnable {
 			// same from our end and cancel the channel.
 			key.channel().close();
 			key.cancel();
+			mediator.notifyNetworkError("Unable to read from user! Connection canceled.");
 			return;
 		}
 
@@ -145,7 +148,14 @@ public class Network implements Runnable {
 			// Write until there's not more data ...
 			while (!queue.isEmpty()) {
 				ByteBuffer buf = (ByteBuffer) queue.get(0);
-				socketChannel.write(buf);
+				try {
+					socketChannel.write(buf);
+				} catch (IOException e) {
+					key.cancel();
+					socketChannel.close();
+					mediator.notifyNetworkError("Unable to write to user! Connection canceled.");
+					return;
+				}
 				if (buf.remaining() > 0) {
 					// ... or the socket's buffer fills up
 					break;
@@ -226,8 +236,9 @@ public class Network implements Runnable {
 						this.write(key);
 					}
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (IOException e) {
+				mediator.notifyNetworkError("Connection closed by other user! Communication canceled.");
+				logger.error("Connection closed by other user. Error was: " + e.toString());
 			}
 		}
 	}

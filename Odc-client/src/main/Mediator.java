@@ -113,8 +113,13 @@ public class Mediator implements Runnable {
 			this.netInterface.startTransfer(ti, InetAddress.getByName((String) netInfo.first),
 												Integer.parseInt((String) netInfo.second));
 		} catch (NumberFormatException | UnknownHostException e) {
-			e.printStackTrace();
+			notifyNetworkError("Unable to initiate file download!");
+			logger.error("Unable to start transfer. Error was: " + e.toString());
 		}
+    }
+    
+    public void notifyNetworkError(String message) {
+    	this.uiMediator.notifyError(message);
     }
 
 	@Override
@@ -132,7 +137,7 @@ public class Mediator implements Runnable {
 			}
 			s.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error("Unable to get users file. Error was: " + e.toString());
 		}
 
 		while(true) {}

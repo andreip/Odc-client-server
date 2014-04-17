@@ -140,7 +140,8 @@ public class Transfer implements Runnable {
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				mediator.notifyNetworkError("Connection closed by other user! Communication canceled.");
+				logger.error("Connection closed by other user. Error was: " + e.toString());
 			}
 		}
 	}
@@ -160,6 +161,7 @@ public class Transfer implements Runnable {
 			// the selection key and close the channel.
 			key.cancel();
 			socketChannel.close();
+			mediator.notifyNetworkError("Unable to read from user! Connection canceled.");
 			return;
 		}
 
@@ -168,6 +170,7 @@ public class Transfer implements Runnable {
 			// same from our end and cancel the channel.
 			key.channel().close();
 			key.cancel();
+			mediator.notifyNetworkError("Unable to read from user! Connection canceled.");
 			return;
 		}
 
@@ -192,7 +195,14 @@ public class Transfer implements Runnable {
 	private void write(SelectionKey key) throws IOException {
 		SocketChannel socketChannel = (SocketChannel) key.channel();
 
-		socketChannel.write(this.pendingData);
+		try {
+			socketChannel.write(this.pendingData);
+		} catch (IOException e) {
+			key.cancel();
+			socketChannel.close();
+			mediator.notifyNetworkError("Unable to write to user! Connection canceled.");
+			return;
+		}
 		this.pendingData = null;
 		
 		// We wrote away all data, so we're no longer interested
