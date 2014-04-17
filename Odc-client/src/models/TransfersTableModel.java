@@ -22,6 +22,9 @@ public class TransfersTableModel extends DefaultTableModel {
 	private static final long serialVersionUID = 1L;
 	// Logger for this class 
 	static Logger logger = Logger.getLogger(TransfersTableModel.class);
+
+	final public static String completedState = "Completed.";
+	final public static String transferingState = "Transfering...";
 	
 	UIMediator uiMediator;
     private List<TransferInfo> transfers;
@@ -64,21 +67,22 @@ public class TransfersTableModel extends DefaultTableModel {
 
     public void updateTransferValue(int id, int value) {
         progressBars.get(id).setValue(value);
-        if (value > 0) {
-            updateTransferState(id, "Transfering...");
-        }
-        if (progressBars.get(id).getMaximum() == value) {
-            updateTransferState(id, "Completed.");
-        }
+        String transferText = getTransferStateForValue(value,
+            progressBars.get(id).getMaximum());
+        updateTransferState(id, transferText);
         progressBars.get(id).update(progressBars.get(id).getGraphics());
         this.uiMediator.repaintUI();
     }
-    
+
     public void updateTransferFilesize(int id, int value) {
         progressBars.get(id).setMaximum(value);
         updateTransferState(id, "Got filesize...");
         this.uiMediator.repaintUI();
         progressBars.get(id).update(progressBars.get(id).getGraphics());
+    }
+
+    public String getTransferStateForValue(int value, int completed) {
+        return (value >= completed) ? completedState : transferingState;
     }
 
     public void updateTransferState(int id, String state) {
