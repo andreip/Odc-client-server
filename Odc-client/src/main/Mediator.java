@@ -4,8 +4,8 @@ import gui.UIMediator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -15,6 +15,7 @@ import javax.swing.SwingUtilities;
 
 import network.Network;
 import network.NetworkWorker;
+import network.Transfer;
 
 import org.apache.log4j.Logger;
 
@@ -110,9 +111,10 @@ public class Mediator implements Runnable {
     	logger.debug("New incoming transfer.");
     	Pair netInfo = users.get(ti.userFrom);
         try {
-			this.netInterface.startTransfer(ti, InetAddress.getByName((String) netInfo.first),
-												Integer.parseInt((String) netInfo.second));
-		} catch (NumberFormatException | UnknownHostException e) {
+        	Transfer t = new Transfer(this, InetAddress.getByName((String) netInfo.first),
+			                          Integer.parseInt((String) netInfo.second));
+			this.netInterface.startTransfer(ti, t);
+		} catch (NumberFormatException | IOException e) {
 			notifyNetworkError("Unable to initiate file download!");
 			logger.error("Unable to start transfer. Error was: " + e.toString());
 		}

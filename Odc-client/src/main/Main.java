@@ -81,6 +81,7 @@ public class Main {
     	}
         try {
 			netInterface = new Network(mediator, worker, hostAddress, port);
+			netInterface.initSelector();
 		} catch (IOException e) {
 			logger.fatal("Unable to instantiate network interface. Error was: " + e.toString() + ".Shutting down...");
 			System.exit(-1);

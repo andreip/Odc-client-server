@@ -52,6 +52,9 @@ public class Transfer implements Runnable {
 		this.mediator = mediator;
 		this.hostAddress = hostAddress;
 		this.port = port;
+	}
+
+	public void initTransfer() throws IOException {
 		this.selector = this.initSelector();
 		this.socket = this.initiateConnection();
 	}

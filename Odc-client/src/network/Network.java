@@ -54,11 +54,14 @@ public class Network implements Runnable {
 		this.worker = worker;
 		this.hostAddress = hostAddress;
 		this.port = port;
-		this.selector = this.initSelector();
 		logger.trace("Network object created.");
 	}
 
-	private Selector initSelector() throws IOException {
+	public void setSelector(Selector selector) {
+		this.selector = selector;
+	}
+
+	public void initSelector() throws IOException {
 		// Create a new selector
 		Selector socketSelector = SelectorProvider.provider().openSelector();
 
@@ -75,21 +78,20 @@ public class Network implements Runnable {
 		serverChannel.register(socketSelector, SelectionKey.OP_ACCEPT);
 
 		logger.trace("Selector and server channel initialized successfully.");
-		return socketSelector;
+		this.selector = socketSelector;
 	}
 	
-	public void startTransfer(TransferInfo ti, InetAddress address, int port) {
+	public void startTransfer(TransferInfo ti, Transfer t) {
 		try {
-			Transfer t = new Transfer(mediator, address, port);
+			t.initTransfer();
 			t.newIncomingTransfer(ti);
 			new Thread(t).start();
 		} catch (IOException e) {
 			mediator.notifyNetworkError("Unable to connect to user! Download canceled.");
 			logger.error("Unable to connect to user. Error was: " + e.toString());
 		}
-		
 	}
-	
+
 	private void accept(SelectionKey key) throws IOException {
 		// For an accept to be pending the channel must be a server socket channel.
 		ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
