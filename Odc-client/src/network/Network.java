@@ -131,7 +131,6 @@ public class Network implements Runnable {
 			// same from our end and cancel the channel.
 			key.channel().close();
 			key.cancel();
-			mediator.notifyNetworkError("Unable to read from user! Connection canceled.");
 			return;
 		}
 
