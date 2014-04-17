@@ -34,7 +34,16 @@ public class TestUIMediator extends TestCase {
 		assertEquals(0, userListModel.size());
 		uimed.addUser("A");
 		assertEquals(1, userListModel.size());
+	}
 
+	public void testRemoveUserFromModel() {
+		UserListModel userListModel = new UserListModel(uimed);
+		uimed.addUser("A");
+		assertEquals(1, userListModel.size());
+		uimed.removeUser("NoOne");
+		assertEquals(1, userListModel.size());
+		uimed.removeUser("A");
+		assertEquals(0, userListModel.size());
 	}
 
 	/* Test that uiMediator does not know about usernames, and
