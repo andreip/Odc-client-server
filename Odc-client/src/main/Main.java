@@ -5,7 +5,12 @@ import gui.UserInterface;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Properties;
+
+import network.Network;
+import network.NetworkWorker;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
@@ -18,6 +23,7 @@ import org.apache.log4j.RollingFileAppender;
  * @author andrei
  */
 public class Main {
+	static Logger logger = Logger.getLogger(Main.class);
 	
 	static void configureLogger(String logFile) {
 		Logger rootLogger = Logger.getRootLogger();
@@ -45,6 +51,43 @@ public class Main {
 		fa.setMaxFileSize("100KB");
 		rootLogger.addAppender(fa);
 	}
+
+	public static Network createNetwork(Properties configs, String username,
+	                                    String homeDir, NetworkWorker worker,
+	                                    Mediator mediator) {
+		Network netInterface = null;
+
+    	// Create a network interface instance.
+    	// Replace default with data from configuration file.
+    	InetAddress hostAddress = null;
+    	int port = 9090;
+    	if (configs.containsKey("host")) {
+    		try {
+				hostAddress = InetAddress.getByName(configs.getProperty("host"));
+			} catch (UnknownHostException e) {
+				logger.error("Unable to read host address " + configs.getProperty("host") + ". Using default.");
+			}
+    	} else {
+    		logger.info("No config entry for host address. Using default.");
+    	}
+    	if (configs.containsKey("port")) {
+    		try {
+    			port = Integer.parseInt(configs.getProperty("port"));
+    		} catch (NumberFormatException e) {
+    			logger.error("Unable to read port number " + configs.getProperty("port") + ". Using default.");
+    		}
+    	} else {
+    		logger.info("No config entry for port number. Using default.");
+    	}
+        try {
+			netInterface = new Network(mediator, worker, hostAddress, port);
+		} catch (IOException e) {
+			logger.fatal("Unable to instantiate network interface. Error was: " + e.toString() + ".Shutting down...");
+			System.exit(-1);
+		}		
+        
+        return netInterface;
+	}
 	
     /**
      * @param args the command line arguments
@@ -69,7 +112,10 @@ public class Main {
 
     	// Create the mediator and pass it the user info.
     	// The mediator handles all structure and role management.
-        Mediator mediator = new Mediator(configs, args[0], homeDir);
+        Mediator mediator = new Mediator(args[0], homeDir);
+        NetworkWorker worker = new NetworkWorker(mediator);
+        Network network = createNetwork(configs, args[0], homeDir, worker, mediator);
+        mediator.initMediator(worker, network);
         
         // Get the UIMediator instance and pass it to the Mediator.
         UIMediator uiMediator = UIMediator.getInstance();

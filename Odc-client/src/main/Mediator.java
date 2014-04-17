@@ -4,13 +4,10 @@ import gui.UIMediator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -40,43 +37,16 @@ public class Mediator implements Runnable {
     Map<String, Pair> users = new HashMap<>();
     Random rand = new Random();
 
-    public Mediator(Properties configs, String username, String homeDir) {
+    public Mediator(String username, String homeDir) {
     	this.username = username;
     	this.homeDir = homeDir;
-    	
+    }
+    
+    public void initMediator(NetworkWorker worker, Network network) {
     	// Create a network worker.
-    	worker = new NetworkWorker(this);
+    	this.worker = worker;
     	new Thread(worker).start();
-    	
-    	// Create a network interface instance.
-    	// Replace default with data from configuration file.
-    	InetAddress hostAddress = null;
-    	int port = 9090;
-    	if (configs.containsKey("host")) {
-    		try {
-				hostAddress = InetAddress.getByName(configs.getProperty("host"));
-			} catch (UnknownHostException e) {
-				logger.error("Unable to read host address " + configs.getProperty("host") + ". Using default.");
-			}
-    	} else {
-    		logger.info("No config entry for host address. Using default.");
-    	}
-    	if (configs.containsKey("port")) {
-    		try {
-    			port = Integer.parseInt(configs.getProperty("port"));
-    		} catch (NumberFormatException e) {
-    			logger.error("Unable to read port number " + configs.getProperty("port") + ". Using default.");
-    		}
-    	} else {
-    		logger.info("No config entry for port number. Using default.");
-    	}
-        try {
-			netInterface = new Network(this, worker, hostAddress, port);
-		} catch (IOException e) {
-			logger.fatal("Unable to instantiate network interface. Error was: " + e.toString() + ".Shutting down...");
-			System.exit(-1);
-		}
-        
+    	this.netInterface = network;
         new Thread(netInterface).start();
     }
     
