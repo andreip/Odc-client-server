@@ -7,7 +7,6 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.SwingUtilities;
 
 import gui.UIMediator;
-
 import network.Network;
 import network.NetworkWorker;
 
@@ -44,13 +43,18 @@ public class TestMediator extends TestCase {
 	/* Assert the path to download a file from local user is build
 	 * using the username's homeDir also.
 	 */
-	public void testBuildOutgoingTransferDir() {
+	public void testBuildOutgoingTransferDir() throws InvocationTargetException, InterruptedException {
 		final ArgumentCaptor<TransferInfo> arg = ArgumentCaptor.forClass(TransferInfo.class);
 		med.newOutgoingTransfer("cineva", "path/to/file2");
 
-		verify(uiMedMock, times(1)).newOutgoingTransfer(arg.capture());
-		assertEquals(arg.getValue().filename, "file2");
-		assertEquals(arg.getValue().path, homeDir + "path/to/");
+		SwingUtilities.invokeAndWait(new Runnable() {
+			@Override
+			public void run() {
+				verify(uiMedMock, times(1)).newOutgoingTransfer(arg.capture());
+				assertEquals(arg.getValue().filename, "file2");
+				assertEquals(arg.getValue().path, homeDir + "path/to/");
+			}
+		});
 	}
 
 	/* Assert Mediator calls UIMediator for rendering concerned logic. */
