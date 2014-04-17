@@ -88,22 +88,20 @@ public class Mediator implements Runnable {
         return ti;
     }
 
-    public void notifyTransferFilesize(TransferInfo ti) {
-    	final TransferInfo tii = ti;
+    public void notifyTransferFilesize(final TransferInfo ti) {
     	SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-            	uiMediator.updateTransferFilesize(tii.id, tii.filesize);
+            	uiMediator.updateTransferFilesize(ti.id, ti.filesize);
             }
         });
     }
     
-    public void updateTransferValue(TransferInfo ti, final int progress) {
-    	final TransferInfo tii = ti;
+    public void updateTransferValue(final TransferInfo ti, final int progress) {
     	SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-            	uiMediator.updateTransferValue(tii.id, progress);
+            	uiMediator.updateTransferValue(ti.id, progress);
             }
         });
     }
