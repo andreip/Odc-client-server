@@ -24,6 +24,7 @@ public class Transfer implements Runnable {
 	// The host:port combination to connect to
 	private InetAddress hostAddress;
 	private int port;
+	private boolean running = true;
 
 	// The selector we'll be monitoring
 	private Selector selector;
@@ -102,7 +103,7 @@ public class Transfer implements Runnable {
 
 	@Override
 	public void run() {
-		while (true) {
+		while (running) {
 			try {
 				synchronized(this.changeRequests) {
 					Iterator<ChangeRequest> changes = this.changeRequests.iterator();
@@ -192,6 +193,8 @@ public class Transfer implements Runnable {
 			// The handler has seen enough, close the connection
 			socketChannel.close();
 			socketChannel.keyFor(this.selector).cancel();
+			// Current thread should exit.
+			running = false;
 		}
 	}
 
