@@ -4,9 +4,8 @@
 # Package Files #
 *.war
 *.ear
-/Odc-client/nbproject/private/
-/Odc-client/build/
-/Odc-client/logs/
-/Odc-webservice/nbproject/private/
-/Odc-webservice/build/
-/Odc-webservice/logs/
+
+nbproject/
+build/
+bin/
+logs/
