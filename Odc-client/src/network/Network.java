@@ -21,6 +21,8 @@ import main.TransferInfo;
 
 import org.apache.log4j.Logger;
 
+import utils.ChangeRequest;
+
 public class Network implements Runnable {
 	// Logger for this class 
 	static Logger logger = Logger.getLogger(Network.class);
