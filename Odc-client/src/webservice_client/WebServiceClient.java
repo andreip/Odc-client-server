@@ -29,13 +29,13 @@ public class WebServiceClient {
 	private static final ScheduledExecutorService scheduler =
 			Executors.newScheduledThreadPool(1);
 
+	private static BaseClient client = null;
+
 	/* Method which does polling for users list (from webservice)
 	 * as a periodic task (at POLLING_INTERVAL ms), which never ends.
 	 */
 	public static void startPollingForUsers(final Mediator mediator) throws FileNotFoundException, IOException {
 		final BaseClient client = getClient();
-		new Thread(client).start();
-
 		final Runnable periodicTask = new Runnable() {
 			public void run() {
 				try {
@@ -53,15 +53,47 @@ public class WebServiceClient {
 		logger.debug("Started polling for users from web service.");
 	}
 
+	public static void stopPollingForUsers() {
+		if (periodicTaskHandle != null)
+			periodicTaskHandle.cancel(true);
+	}
+
+	/* Announce web service about a new user being online. */
+	public static void userIsOnline(String name, String host, int port) throws IOException {
+		final BaseClient client = getClient();
+		String portStr = Integer.toString(port);
+		BaseRspHandler handler = new WebServiceRspHandler(null);
+		String command = "USERS ADD " + name + " " + host + " " + portStr;
+		client.send(command.getBytes(), handler);
+		handler.waitForResponse();
+	}
+
+	/* Announce web service about a user's exit. */
+	public static void userExits(String name) throws IOException {
+		final BaseClient client = getClient();
+		BaseRspHandler handler = new WebServiceRspHandler(null);
+		String command = "USERS EXIT " + name;
+		client.send(command.getBytes(), handler);
+		handler.waitForResponse();
+	}
+
 	/* Create a client which connects to the port and host where the
 	 * web service is listening.
 	 */
 	private static BaseClient getClient() throws FileNotFoundException, IOException {
-		Properties configs = getWebServiceConfig();
-		String host = configs.getProperty("host", "localhost");
-		InetAddress hostAddress = InetAddress.getByName(host);
-		int port = Integer.parseInt(configs.getProperty("port", "9089"));
-		return new BaseClient(hostAddress, port);
+		if (client == null) {
+			/* Create the client only once, then reuse the instance. */
+			Properties configs = getWebServiceConfig();
+			String host = configs.getProperty("host", "localhost");
+			InetAddress hostAddress = InetAddress.getByName(host);
+			int port = Integer.parseInt(configs.getProperty("port", "9089"));
+			client = new BaseClient(hostAddress, port);
+			/* Also start the client, so we may use it with client.send. */
+			Thread t = new Thread(client);
+			//t.setDaemon(true);
+			t.start();
+		}
+		return client;
 	}
 
 	private static Properties getWebServiceConfig() throws FileNotFoundException, IOException {

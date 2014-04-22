@@ -3,6 +3,9 @@ package main;
 import gui.UIMediator;
 import gui.UserInterface;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -17,6 +20,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
+
+import webservice_client.WebServiceClient;
 
 /**
  *
@@ -92,8 +97,9 @@ public class Main {
 	
     /**
      * @param args the command line arguments
+     * @throws IOException 
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) throws IOException {
     	if (args.length != 1) {
     		System.err.println("Usage: java Main <user_name>");
     		System.exit(-1);
@@ -111,6 +117,15 @@ public class Main {
     	String logFile = "logs/" + args[0] + ".log";
     	configureLogger(logFile);
 
+        // Announce WebService about the current user being online.
+        try {
+			WebServiceClient.userIsOnline(args[0], configs.getProperty("host"),
+			                              Integer.parseInt(configs.getProperty("port")));
+		} catch (NumberFormatException | IOException e) {
+			System.err.println(e.getStackTrace());
+			System.exit(-1);
+		}
+
     	// Create the mediator and pass it the user info.
     	// The mediator handles all structure and role management.
         Mediator mediator = new Mediator(args[0], homeDir);
@@ -125,8 +140,30 @@ public class Main {
         UserInterface ui = new UserInterface(uiMediator);
         ui.setVisible(true);
         ui.setLocationRelativeTo(null);
+        ui.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+	            logger.debug("User exits: " + args[0]);
+	            try {
+					WebServiceClient.userExits(args[0]);
+				} catch (IOException e1) {
+					logger.error(e1.getStackTrace());
+				}
+	            System.exit(0);
+			}
+		});
         
         // Start execution of the software.
-        new Thread(mediator).start();
+        Thread t = new Thread(mediator);
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+
+        // FIXME: does not trigger when exit Ctrl+C: Announce WebService that this user exists.
+        } finally {
+            logger.debug("User exits: " + args[0]);
+            WebServiceClient.userExits(args[0]);
+        }
     }
 }

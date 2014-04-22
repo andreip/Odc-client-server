@@ -3,19 +3,19 @@ package main;
 import gui.UIMediator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Scanner;
 
 import javax.swing.SwingUtilities;
 
 import network.Network;
 import network.NetworkWorker;
 import network.Transfer;
+import webservice_client.WebServiceClient;
 
 import org.apache.log4j.Logger;
 
@@ -124,22 +124,41 @@ public class Mediator implements Runnable {
     	this.uiMediator.notifyError(message);
     }
 
+    /* Given a list of users, update the list internally and also
+     * in the interface, using UIMediator.
+     */
+	public void updateUsersList(Map<String, Entry<String, Integer>> users) {
+		/* Update list of mediator users with received one. */
+		for (Entry<String, Entry<String, Integer>> e : users.entrySet()) {
+			boolean isNew = ! this.users.containsKey(e.getKey());
+
+			/* Override user details every time, some may change over time. */
+			this.users.put(e.getKey(), new Pair(e.getValue().getKey(),
+			                                    e.getValue().getValue()));
+			/* Add new user to the interface too. */
+			if (isNew && !e.getKey().equals(this.username))
+				uiMediator.userOn(e.getKey());
+		}
+
+		/* Final check on interface users, to see if every one is in
+		 * the received list of users. Some of the users may have
+		 * gone offline.
+		 */
+		for (Entry<String, Pair> e : this.users.entrySet())
+			/* Remove user from UI if not found in received users list. */
+			if (!users.containsKey(e.getKey()))
+				uiMediator.userOff(e.getKey());
+	}
+
 	@Override
 	public void run() {
 		try {
-			Scanner s = new Scanner(new File("res/users"));
-			while (s.hasNext()) {
-				String line = s.nextLine();
-				String[] contents = line.split(" ");
-				String user = contents[0];
-				this.users.put(user, new Pair(contents[1], contents[2]));
-				if (!user.equals(this.username)) {
-					uiMediator.userOn(user);
-				}
-			}
-			s.close();
-		} catch (FileNotFoundException e) {
-			logger.error("Unable to get users file. Error was: " + e.toString());
+			/* Start polling for users list from web service. This does not
+			 * end until the thread closes.
+			 */
+			WebServiceClient.startPollingForUsers(this);
+		} catch (IOException e) {
+			logger.warn(e.getStackTrace());
 		}
 
 		while(true) {}
