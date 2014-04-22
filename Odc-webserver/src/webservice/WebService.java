@@ -10,6 +10,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.*;
+import java.util.Map.Entry;
 
 public class WebService implements Runnable {
 	// The host:port combination to listen on
@@ -32,6 +33,8 @@ public class WebService implements Runnable {
 
 	// Maps a SocketChannel to a list of ByteBuffer instances
 	private Map<SocketChannel, List<ByteBuffer>> pendingData = new HashMap<>();
+
+	private Map<String, Entry<String, Integer>> users = new HashMap<>();
 
 	public WebService(InetAddress hostAddress, int port, WebServiceWorker worker) throws IOException {
 		this.hostAddress = hostAddress;
@@ -103,6 +106,26 @@ public class WebService implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void removeUser(String name) {
+		this.users.remove(name);
+	}
+
+	/* Returns a list of users of the form:
+	 * "USERS NAME1 HOST1 PORT1 NAME2 HOST2 PORT2 ..."
+	 */
+	public String getUsers() {
+		StringBuilder sb = new StringBuilder("USERS");
+		for (Entry<String, Entry<String, Integer>> e: this.users.entrySet()) {
+			sb.append(" " + e.getKey() + " " +
+			          e.getValue().getKey() + " " + e.getValue().getValue());
+		}
+		return sb.toString();
+	}
+
+	public void addUser(String user, String host, int port) {
+		this.users.put(user, new AbstractMap.SimpleEntry<String, Integer>(host, port));
 	}
 
 	private void accept(SelectionKey key) throws IOException {
