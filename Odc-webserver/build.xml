@@ -1,0 +1,35 @@
+<project name="Odc-client" default="run" basedir=".">
+	<description>Tema 2 IDP</description>
+	<property name="src.dir" value="src"/>
+	<property name="build.dir" value="build"/>
+	<property name="lib.dir" value="lib"/>
+
+	<path id="classpath">
+		<fileset dir="${lib.dir}" casesensitive="yes">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<target name="build" description="Compile the source code." >
+		<mkdir dir="${build.dir}"/>
+		<!-- Compile the java code from ${src} into ${build} -->
+		<javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false">
+			<classpath refid="classpath"/>
+		</javac>
+	</target>
+	
+	<target name="clean" description="clean up" >
+	    <!-- Delete the ${build} and ${dist} directory trees -->
+	    <delete dir="${build.dir}"/> 
+	</target>
+
+ 	<target name="run" depends="build">
+		<java fork="true" classname="main.Main">
+			<classpath>
+				<path refid="classpath"/>
+				<pathelement location="${build.dir}"/>
+			</classpath>
+		</java>
+	</target>
+
+</project> 
