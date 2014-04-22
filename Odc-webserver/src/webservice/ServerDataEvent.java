@@ -3,7 +3,7 @@ package webservice;
 
 import java.nio.channels.SocketChannel;
 
-public class ServerDataEvent<T> {
+public class ServerDataEvent {
 	public WebService server;
 	public SocketChannel socket;
 	public byte[] data;

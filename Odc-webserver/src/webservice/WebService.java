@@ -3,7 +3,6 @@ package webservice;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -29,10 +28,10 @@ public class WebService implements Runnable {
 	private WebServiceWorker worker;
 
 	// A list of PendingChange instances
-	private List pendingChanges = new LinkedList();
+	private List<ChangeRequest> pendingChanges = new LinkedList<>();
 
 	// Maps a SocketChannel to a list of ByteBuffer instances
-	private Map pendingData = new HashMap();
+	private Map<SocketChannel, List<ByteBuffer>> pendingData = new HashMap<>();
 
 	public WebService(InetAddress hostAddress, int port, WebServiceWorker worker) throws IOException {
 		this.hostAddress = hostAddress;
@@ -48,9 +47,9 @@ public class WebService implements Runnable {
 
 			// And queue the data we want written
 			synchronized (this.pendingData) {
-				List queue = (List) this.pendingData.get(socket);
+				List<ByteBuffer> queue = this.pendingData.get(socket);
 				if (queue == null) {
-					queue = new ArrayList();
+					queue = new ArrayList<ByteBuffer>();
 					this.pendingData.put(socket, queue);
 				}
 				queue.add(ByteBuffer.wrap(data));
@@ -66,7 +65,7 @@ public class WebService implements Runnable {
 			try {
 				// Process any pending changes
 				synchronized (this.pendingChanges) {
-					Iterator changes = this.pendingChanges.iterator();
+					Iterator<ChangeRequest> changes = this.pendingChanges.iterator();
 					while (changes.hasNext()) {
 						ChangeRequest change = (ChangeRequest) changes.next();
 						switch (change.type) {
@@ -82,7 +81,7 @@ public class WebService implements Runnable {
 				this.selector.select();
 
 				// Iterate over the set of keys for which events are available
-				Iterator selectedKeys = this.selector.selectedKeys().iterator();
+				Iterator<SelectionKey> selectedKeys = this.selector.selectedKeys().iterator();
 				while (selectedKeys.hasNext()) {
 					SelectionKey key = (SelectionKey) selectedKeys.next();
 					selectedKeys.remove();
@@ -112,7 +111,6 @@ public class WebService implements Runnable {
 
 		// Accept the connection and make it non-blocking
 		SocketChannel socketChannel = serverSocketChannel.accept();
-		Socket socket = socketChannel.socket();
 		socketChannel.configureBlocking(false);
 
 		// Register the new SocketChannel with our Selector, indicating
@@ -154,7 +152,7 @@ public class WebService implements Runnable {
 		SocketChannel socketChannel = (SocketChannel) key.channel();
 
 		synchronized (this.pendingData) {
-			List queue = (List) this.pendingData.get(socketChannel);
+			List<ByteBuffer> queue = this.pendingData.get(socketChannel);
 
 			// Write until there's not more data ...
 			while (!queue.isEmpty()) {

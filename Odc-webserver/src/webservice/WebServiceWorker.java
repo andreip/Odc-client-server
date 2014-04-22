@@ -1,11 +1,10 @@
 package webservice;
-import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.util.LinkedList;
 import java.util.List;
 
 public class WebServiceWorker implements Runnable {
-	private List queue = new LinkedList();
+	private List<ServerDataEvent> queue = new LinkedList<>();
 	
 	public void processData(WebService server, SocketChannel socket, byte[] data, int count) {
 		byte[] dataCopy = new byte[count];
