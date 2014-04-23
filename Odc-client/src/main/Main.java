@@ -122,7 +122,7 @@ public class Main {
 			WebServiceClient.userIsOnline(args[0], configs.getProperty("host"),
 			                              Integer.parseInt(configs.getProperty("port")));
 		} catch (NumberFormatException | IOException e) {
-			System.err.println(e.getStackTrace());
+			System.err.println(e.toString());
 			System.exit(-1);
 		}
 

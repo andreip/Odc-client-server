@@ -158,7 +158,7 @@ public class Mediator implements Runnable {
 			 */
 			WebServiceClient.startPollingForUsers(this);
 		} catch (IOException e) {
-			logger.warn(e.getStackTrace());
+			logger.warn(e.toString());
 		}
 
 		while(true) {}
