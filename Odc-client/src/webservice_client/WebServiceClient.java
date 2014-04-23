@@ -9,6 +9,9 @@ import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+
+import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
@@ -25,11 +28,12 @@ public class WebServiceClient {
 	private final static String WEBSERVICE_FILENAME = "webservice.properties";
 
 	// In milliseconds;
-	private static final int POLLING_INTERVAL = 300;
+	private static final int POLLING_INTERVAL = 1000;
 	private static final ScheduledExecutorService scheduler =
 			Executors.newScheduledThreadPool(1);
 
 	private static BaseClient client = null;
+	private static ScheduledFuture<?> periodicTaskHandle = null;
 
 	/* Method which does polling for users list (from webservice)
 	 * as a periodic task (at POLLING_INTERVAL ms), which never ends.
@@ -48,8 +52,9 @@ public class WebServiceClient {
 				}
 			}
 		};
-		scheduler.scheduleAtFixedRate(periodicTask, 0, POLLING_INTERVAL,
-		                              MILLISECONDS);
+		periodicTaskHandle =
+			scheduler.scheduleAtFixedRate(periodicTask, 0, POLLING_INTERVAL,
+		                                  MILLISECONDS);
 		logger.debug("Started polling for users from web service.");
 	}
 
