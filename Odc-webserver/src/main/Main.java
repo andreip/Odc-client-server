@@ -74,7 +74,8 @@ class Main {
 			new Thread(worker).start();
 			new Thread(new WebService(hostAddress, port, worker)).start();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Could not start webservice. Error was: " + e.toString() + ". Exiting.");
+			System.exit(-1);
 		}
 	}
 }
