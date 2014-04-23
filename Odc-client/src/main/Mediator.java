@@ -112,7 +112,7 @@ public class Mediator implements Runnable {
     	Pair netInfo = users.get(ti.userFrom);
         try {
         	Transfer t = new Transfer(this, InetAddress.getByName((String) netInfo.first),
-			                          Integer.parseInt((String) netInfo.second));
+			                          Integer.parseInt(netInfo.second.toString()));
 			this.netInterface.startTransfer(ti, t);
 		} catch (NumberFormatException | IOException e) {
 			notifyNetworkError("Unable to initiate file download!");
