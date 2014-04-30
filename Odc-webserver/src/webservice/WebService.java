@@ -34,7 +34,10 @@ public class WebService implements Runnable {
 	// Maps a SocketChannel to a list of ByteBuffer instances
 	private Map<SocketChannel, List<ByteBuffer>> pendingData = new HashMap<>();
 
+	/* Keep mapping user - (host, port). */
 	private Map<String, Entry<String, Integer>> users = new HashMap<>();
+	/* Keep mapping user - treeNode of user. */
+	private Map<String, byte[]> userFiles = new HashMap<>();
 
 	public WebService(InetAddress hostAddress, int port, WebServiceWorker worker) throws IOException {
 		this.hostAddress = hostAddress;
@@ -111,7 +114,6 @@ public class WebService implements Runnable {
 	public void removeUser(String name) {
 		this.users.remove(name);
 	}
-
 	/* Returns a list of users of the form:
 	 * "USERS NAME1 HOST1 PORT1 NAME2 HOST2 PORT2 ..."
 	 */
@@ -123,9 +125,18 @@ public class WebService implements Runnable {
 		}
 		return sb.toString();
 	}
-
 	public void addUser(String user, String host, int port) {
 		this.users.put(user, new AbstractMap.SimpleEntry<String, Integer>(host, port));
+	}
+
+	public void removeUserFiles(String name) {
+		this.userFiles.remove(name);
+	}
+	public byte[] getUserFiles(String name) {
+		return this.userFiles.get(name);
+	}
+	public void addUserFiles(String name, byte[] root) {
+		this.userFiles.put(name, root);
 	}
 
 	private void accept(SelectionKey key) throws IOException {

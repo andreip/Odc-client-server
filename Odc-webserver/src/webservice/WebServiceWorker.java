@@ -1,7 +1,12 @@
 package webservice;
+import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.swing.tree.TreeNode;
+
+import utils.SerializationHelper;
 
 public class WebServiceWorker implements Runnable {
 	private List<ServerDataEvent> queue = new LinkedList<>();
@@ -38,29 +43,59 @@ public class WebServiceWorker implements Runnable {
 	/* Based on the request message from client, respond in a particular way.
 	 *
 	 * Received requests can be:
-	 * - USERS ADD NAME HOST PORT
-	 *   -> request the webserver to add a user (with name NAME) to the DB.
-	 * - USERS REQ
-	 *   -> request the webserver a complete list of all users registered
-	 * - USERS EXIT NAME
-	 *   -> request the webserver to delete a user (with name NAME), as he
-	 *      is going to exit
+	 * - USER details related
+	 *   - USERS ADD NAME HOST PORT
+	 *     -> request the webserver to add a user (with name NAME) to the DB.
+	 *   - USERS REQ
+	 *     -> request the webserver a complete list of all users registered
+	 * - FILE details related (for each user)
+	 *   - <serialized_root> (try and deserialize it and see if it holds)
+	 *     -> register given serialized TreeNode in the system.
+	 *   - FILES REQ NAME
+	 *     -> request TreeNode for NAME.
+	 *
+	 *   - USERS EXIT NAME
+	 *     -> request the webserver to delete a user (with name NAME), as he
+	 *        is going to exit
+	 *     -> also webserver will delete the TreeNode associated w/ NAME.
 	 */
 	private byte[] getBytesToSendBack(ServerDataEvent dataEvent) {
-		byte[] response = null;
+		/* Default response. */
+		byte[] response = "ACK".getBytes();
 
-		String[] strs = new String(dataEvent.data).split(" ");
-		if (strs[0].equals("USERS")) {
-			if (strs[1].equals("ADD")) {
-				assert(strs.length == 5);
-				dataEvent.server.addUser(strs[2], strs[3], Integer.parseInt(strs[4]));
-				response = "ACK".getBytes();
-			} else if (strs[1].equals("REQ")) {
-				response = dataEvent.server.getUsers().getBytes();
-			} else if (strs[1].equals("EXIT")) {
-				assert(strs.length == 3);
-				dataEvent.server.removeUser(strs[2]);
-				response = "ACK".getBytes();
+		/* First try and see if it's a TreeNode sent. */
+		TreeNode root = null;
+		try {
+			root = (TreeNode)SerializationHelper.deserialize(dataEvent.data);
+		} catch (ClassNotFoundException | IOException e) {}
+
+		/* If we've got a root, then we received a TreeNode register request. */
+		if (root != null) {
+			System.out.println("is treenode, root " + root.toString());
+			String userName = root.toString();
+			/* Adding as byte[] array is easier, as it doesn't require
+			 * serialization again for requests, just send it.
+			 */
+			dataEvent.server.addUserFiles(userName, dataEvent.data);
+		} else {
+			String[] strs = new String(dataEvent.data).split(" ");
+			if (strs[0].equals("USERS")) {
+				if (strs[1].equals("ADD")) {
+					assert(strs.length == 5);
+					dataEvent.server.addUser(strs[2], strs[3], Integer.parseInt(strs[4]));
+				} else if (strs[1].equals("REQ")) {
+					response = dataEvent.server.getUsers().getBytes();
+				} else if (strs[1].equals("EXIT")) {
+					assert(strs.length == 3);
+					dataEvent.server.removeUser(strs[2]);
+					dataEvent.server.removeUserFiles(strs[2]);
+				}
+			} else if(strs[0].equals("FILES")) {
+				if (strs[1].equals("REQ")) {
+					String userName = strs[2];
+					System.out.println("Server received FILES REQ for " + userName);
+					response = dataEvent.server.getUserFiles(userName);
+				}
 			}
 		}
 		return response;
