@@ -1,5 +1,7 @@
 package webservice_client;
 
+import gui.UIMediator;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -89,6 +91,29 @@ public class WebServiceClient {
 		serializedRoot = SerializationHelper.serialize(root);
 		BaseRspHandler handler = new WebServiceRspHandler(null);
 		client.send(serializedRoot, handler);
+		handler.waitForResponse();
+	}
+
+	public static void getUserTreeNode(final String name, final UIMediator uimed) throws IOException {
+		System.out.println("Sending user tree node req for " + name);
+		byte[] request = ("FILES REQ " + name).getBytes();
+
+		/* A special handler that will deserialize in TreeNode back. */
+		BaseRspHandler handler = new WebServiceRspHandler(null) {
+			@Override
+			protected void processResponse(byte[] rsp) {
+				TreeNode root = null;
+				try {
+					root = (TreeNode) SerializationHelper.deserialize(rsp);
+					logger.debug("Successfully received TreeNode class for user " + name);
+					uimed.setCurrentUserFiles(root);
+				} catch (ClassNotFoundException | IOException e) {
+					logger.error(e.toString());
+				}
+			}
+		};
+
+		client.send(request, handler);
 		handler.waitForResponse();
 	}
 

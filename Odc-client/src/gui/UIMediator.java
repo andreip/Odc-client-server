@@ -82,7 +82,7 @@ public class UIMediator {
         }
     }
 
-    public DefaultMutableTreeNode getUserHomeRoot(File rootFile) {
+    public static DefaultMutableTreeNode getUserHomeRoot(File rootFile) {
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(rootFile.getName());
         if (rootFile.isDirectory()) {
             for (File child : rootFile.listFiles()) {
@@ -98,12 +98,9 @@ public class UIMediator {
         }
     }
 
-    /* TODO mariana: should get the file structure from the webservice. */
-    public void setCurrentUserFiles(String username) {
-        if (this.userFilesTreeModel != null) {
-            TreeNode root = getUserHomeRoot(new File("res/" + username));
+    public void setCurrentUserFiles(TreeNode root) {
+        if (this.userFilesTreeModel != null)
             this.userFilesTreeModel.setRoot(root);
-        }
     }
 
     public void userOn(String username) {
