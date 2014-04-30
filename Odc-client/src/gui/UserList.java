@@ -1,15 +1,23 @@
 package gui;
 
+import java.io.IOException;
+
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import org.apache.log4j.Logger;
+
+import webservice_client.WebServiceClient;
 
 /**
  *
  * @author andrei
  */
 public class UserList extends JList<String> {
+	static Logger logger = Logger.getLogger(UIMediator.class);
+
 	private static final long serialVersionUID = 1L;
 	UIMediator uiMediator;
     int lastSelectedIndex = -1;
@@ -28,7 +36,17 @@ public class UserList extends JList<String> {
                 if (index != lastSelectedIndex) {
                     lastSelectedIndex = index;
                     String userName = (String) UserList.this.getSelectedValue();
-                    uiMediator.setCurrentUserFiles(userName);
+
+                    /* AVOID a bug with this when user exists. */
+                    if (userName.equals("null"))
+                        return;
+
+                    /* Make WebService request for user files. */
+                    try {
+						WebServiceClient.getUserTreeNode(userName, uiMediator);
+					} catch (IOException e) {
+						logger.error(e.toString());
+					}
                 }
             }
         });
