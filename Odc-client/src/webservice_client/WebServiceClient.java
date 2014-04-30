@@ -12,11 +12,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
 import javax.swing.SwingUtilities;
+import javax.swing.tree.TreeNode;
 
 import org.apache.log4j.Logger;
 
 import utils.BaseClient;
 import utils.BaseRspHandler;
+import utils.SerializationHelper;
 
 import main.Mediator;
 
@@ -79,6 +81,14 @@ public class WebServiceClient {
 		BaseRspHandler handler = new WebServiceRspHandler(null);
 		String command = "USERS EXIT " + name;
 		client.send(command.getBytes(), handler);
+		handler.waitForResponse();
+	}
+
+	public static void sendUserTreeNode(String name, TreeNode root) throws IOException {
+		byte[] serializedRoot = null;
+		serializedRoot = SerializationHelper.serialize(root);
+		BaseRspHandler handler = new WebServiceRspHandler(null);
+		client.send(serializedRoot, handler);
 		handler.waitForResponse();
 	}
 

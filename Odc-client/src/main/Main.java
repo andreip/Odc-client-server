@@ -6,11 +6,14 @@ import gui.UserInterface;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
+
+import javax.swing.tree.TreeNode;
 
 import network.Network;
 import network.NetworkWorker;
@@ -21,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
 
+import utils.SerializationHelper;
 import webservice_client.WebServiceClient;
 
 /**
@@ -121,6 +125,9 @@ public class Main {
         try {
 			WebServiceClient.userIsOnline(args[0], configs.getProperty("host"),
 			                              Integer.parseInt(configs.getProperty("port")));
+			/* Send TreeNode to server. */
+			TreeNode root = UIMediator.getUserHomeRoot(new File("res/" + args[0]));
+			WebServiceClient.sendUserTreeNode(args[0], root);
 		} catch (NumberFormatException | IOException e) {
 			System.err.println(e.toString());
 			System.exit(-1);
