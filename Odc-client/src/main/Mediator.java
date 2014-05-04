@@ -130,6 +130,7 @@ public class Mediator implements Runnable {
      * in the interface, using UIMediator.
      */
 	public void updateUsersList(Map<String, Entry<String, Integer>> users) {
+		boolean updated = false;
 		/* Update list of mediator users with received one. */
 		for (Entry<String, Entry<String, Integer>> e : users.entrySet()) {
 			boolean isNew = ! this.users.containsKey(e.getKey());
@@ -138,8 +139,10 @@ public class Mediator implements Runnable {
 			this.users.put(e.getKey(), new Pair(e.getValue().getKey(),
 			                                    e.getValue().getValue()));
 			/* Add new user to the interface too. */
-			if (isNew && !e.getKey().equals(this.username))
+			if (isNew && !e.getKey().equals(this.username)) {
 				uiMediator.userOn(e.getKey());
+				updated = true;
+			}
 		}
 
 		/* Final check on interface users, to see if every one is in
@@ -148,8 +151,12 @@ public class Mediator implements Runnable {
 		 */
 		for (Entry<String, Pair> e : this.users.entrySet())
 			/* Remove user from UI if not found in received users list. */
-			if (!users.containsKey(e.getKey()))
+			if (!users.containsKey(e.getKey())) {
 				uiMediator.userOff(e.getKey());
+				updated = true;
+			}
+		if (updated)
+			uiMediator.updateState("Receiving user list...");
 	}
 
 	@Override

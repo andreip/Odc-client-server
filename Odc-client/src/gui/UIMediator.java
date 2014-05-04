@@ -1,11 +1,14 @@
 package gui;
 
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
@@ -34,8 +37,19 @@ public class UIMediator {
     private UserList userList;
     private UserFilesTreeModel userFilesTreeModel;
     private UserInterface ui;
+    private Timer statusTimer;
 
-    private UIMediator () {}
+    private UIMediator () {
+    	this.statusTimer = new Timer(1000, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (UIMediator.this.status != null)
+					UIMediator.this.status.setText(" ");
+				UIMediator.this.statusTimer.stop();
+			}
+		});
+    }
 
     public static UIMediator getInstance() {
         if (instance == null)
@@ -99,8 +113,10 @@ public class UIMediator {
     }
 
     public void setCurrentUserFiles(TreeNode root) {
-        if (this.userFilesTreeModel != null)
+        if (this.userFilesTreeModel != null) {
             this.userFilesTreeModel.setRoot(root);
+            this.updateState("Receiving file list from " + root.toString() + "...");
+        }
     }
 
     public void userOn(String username) {
@@ -118,6 +134,7 @@ public class UIMediator {
     public void updateState(String state) {
         if (this.status != null) {
             this.status.setText(state);
+            this.statusTimer.start();
         }
     }
 
