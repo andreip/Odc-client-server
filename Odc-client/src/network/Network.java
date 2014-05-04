@@ -213,12 +213,12 @@ public class Network implements Runnable {
 					this.changeRequests.clear(); 
 				}
 				
-				logger.debug("After pending changes processing.");
+//				logger.debug("After pending changes processing.");
 
 				// Wait for an event on one of the registered channels
 				this.selector.select();
 				
-				logger.debug("Selector selected something.");
+//				logger.debug("Selector selected something.");
 				
 				// Iterate over the set of keys for which events are available
 				Iterator<SelectionKey> selectedKeys = this.selector.selectedKeys().iterator();
