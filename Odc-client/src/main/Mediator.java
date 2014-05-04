@@ -11,13 +11,15 @@ import java.util.Map.Entry;
 import java.util.Random;
 
 import javax.swing.SwingUtilities;
+import javax.swing.tree.TreeNode;
 
 import network.Network;
 import network.NetworkWorker;
 import network.Transfer;
-import webservice_client.WebServiceClient;
 
 import org.apache.log4j.Logger;
+
+import webservice_client.WebServiceClient;
 
 /**
  *
@@ -161,7 +163,18 @@ public class Mediator implements Runnable {
 			logger.warn(e.toString());
 		}
 
-		while(true) {}
+		while(true) {
+			TreeNode root = UIMediator.getUserHomeRoot(new File("res/" + this.username));
+			try {
+				WebServiceClient.sendUserTreeNode(this.username, root);
+			} catch (IOException e) {
+				logger.error("Unable to send file list to server");
+				e.printStackTrace();
+			}
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {}
+		}
 	}
 }
 
