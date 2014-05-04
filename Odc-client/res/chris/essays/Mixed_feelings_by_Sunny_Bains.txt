@@ -1,0 +1,82 @@
+Mixed Feelings 
+
+See with your tongue. Navigate with your skin. Fly by the seat of your pants (literally). How researchers can tap the plasticity of the brain to hack our 5 senses — and build a few new ones.
+By Sunny Bains
+
+For six weird weeks in the fall of 2004, Udo Wächter had an unerring sense of direction. Every morning after he got out of the shower, Wächter, a sysadmin at the University of Osnabrück in Germany, put on a wide beige belt lined with 13 vibrating pads — the same weight-and-gear modules that make a cell phone judder. On the outside of the belt were a power supply and a sensor that detected Earth's magnetic field. Whichever buzzer was pointing north would go off. Constantly.
+
+"It was slightly strange at first," Wächter says, "though on the bike, it was great." He started to become more aware of the peregrinations he had to make while trying to reach a destination. "I finally understood just how much roads actually wind," he says. He learned to deal with the stares he got in the library, his belt humming like a distant chain saw. Deep into the experiment, Wächter says, "I suddenly realized that my perception had shifted. I had some kind of internal map of the city in my head. I could always find my way home. Eventually, I felt I couldn't get lost, even in a completely new place."
+
+The effects of the "feelSpace belt" — as its inventor, Osnabrück cognitive scientist Peter König, dubbed the device — became even more profound over time. König says while he wore it he was "intuitively aware of the direction of my home or my office. I'd be waiting in line in the cafeteria and spontaneously think: I live over there." On a visit to Hamburg, about 100 miles away, he noticed that he was conscious of the direction of his hometown. Wächter felt the vibration in his dreams, moving around his waist, just like when he was awake.
+
+Direction isn't something humans can detect innately. Some birds can, of course, and for them it's no less important than taste or smell are for us. In fact, lots of animals have cool, "extra" senses. Sunfish see polarized light. Loggerhead turtles feel Earth's magnetic field. Bonnethead sharks detect subtle changes (less than a nanovolt) in small electrical fields. And other critters have heightened versions of familiar senses — bats hear frequencies outside our auditory range, and some insects see ultraviolet light.
+
+We humans get just the five. But why? Can our senses be modified? Expanded? Given the right prosthetics, could we feel electromagnetic fields or hear ultrasound? The answers to these questions, according to researchers at a handful of labs around the world, appear to be yes.
+
+It turns out that the tricky bit isn't the sensing. The world is full of gadgets that detect things humans cannot. The hard part is processing the input. Neuroscientists don't know enough about how the brain interprets data. The science of plugging things directly into the brain — artificial retinas or cochlear implants — remains primitive.
+
+So here's the solution: Figure out how to change the sensory data you want — the electromagnetic fields, the ultrasound, the infrared — into something that the human brain is already wired to accept, like touch or sight. The brain, it turns out, is dramatically more flexible than anyone previously thought, as if we had unused sensory ports just waiting for the right plug-ins. Now it's time to build them.
+
+How do we sense the world around us? It seems like a simple question. Eyes collect photons of certain wavelengths, transduce them into electrical signals, and send them to the brain. Ears do the same thing with vibrations in the air — sound waves. Touch receptors pick up pressure, heat, cold, pain. Smell: chemicals contacting receptors inside the nose. Taste: buds of cells on the tongue.
+
+There's a reasonably well-accepted sixth sense (or fifth and a half, at least) called proprioception. A network of nerves, in conjunction with the inner ear, tells the brain where the body and all its parts are and how they're oriented. This is how you know when you're upside down, or how you can tell the car you're riding in is turning, even with your eyes closed.
+
+When computers sense the world, they do it in largely the same way we do. They have some kind of peripheral sensor, built to pick up radiation, let's say, or sound, or chemicals. The sensor is connected to a transducer that can change analog data about the world into electrons, bits, a digital form that computers can understand — like recording live music onto a CD. The transducer then pipes the converted data into the computer.
+
+But before all that happens, programmers and engineers make decisions about what data is important and what isn't. They know the bandwidth and the data rate the transducer and computer are capable of, and they constrain the sensor to provide only the most relevant information. The computer can "see" only what it's been told to look for.
+
+The brain, by contrast, has to integrate all kinds of information from all five and a half senses all the time, and then generate a complete picture of the world. So it's constantly making decisions about what to pay attention to, what to generalize or approximate, and what to ignore. In other words, it's flexible.
+
+In February, for example, a team of German researchers confirmed that the auditory cortex of macaques can process visual information. Similarly, our visual cortex can accommodate all sorts of altered data. More than 50 years ago, Austrian researcher Ivo Kohler gave people goggles that severely distorted their vision: The lenses turned the world upside down. After several weeks, subjects adjusted — their vision was still tweaked, but their brains were processing the images so they'd appear normal. In fact, when people took the glasses off at the end of the trial, everything seemed to move and distort in the opposite way.
+
+Later, in the '60s and '70s, Harvard neuro biologists David Hubel and Torsten Wiesel figured out that visual input at a certain critical age helps animals develop a functioning visual cortex (the pair shared a 1981 Nobel Prize for their work). But it wasn't until the late '90s that researchers realized the adult brain was just as changeable, that it could redeploy neurons by forming new synapses, remapping itself. That property is called neuroplasticity.
+
+This is really good news for people building sensory prosthetics, because it means that the brain can change how it interprets information from a particular sense, or take information from one sense and interpret it with another. In other words, you can use whatever sensor you want, as long as you convert the data it collects into a form the human brain can absorb.
+
+Paul Bach-y-Rita built his first "tactile display" in the 1960s. Inspired by the plasticity he saw in his father as the older man recovered from a stroke, Bach-y-Rita wanted to prove that the brain could assimilate disparate types of information. So he installed a 20-by-20 array of metal rods in the back of an old dentist chair. The ends of the rods were the pixels — people sitting in the chairs could identify, with great accuracy, "pictures" poked into their backs; they could, in effect, see the images with their sense of touch.
+
+By the 1980s, Bach-y-Rita's team of neuroscientists — now located at the University of Wisconsin — were working on a much more sophisticated version of the chair. Bach-y-Rita died last November, but his lab and the company he cofounded, Wicab, are still using touch to carry new sensory information. Having long ago abandoned the vaguely Marathon Man like dentist chair, the team now uses a mouthpiece studded with 144 tiny electrodes. It's attached by ribbon cable to a pulse generator that induces electric current against the tongue. (As a sensing organ, the tongue has a lot going for it: nerves and touch receptors packed close together and bathed in a conducting liquid, saliva.)
+
+So what kind of information could they pipe in? Mitch Tyler, one of Bach-y-Rita's closest research colleagues, literally stumbled upon the answer in 2000, when he got an inner ear infection. If you've had one of these (or a hangover), you know the feeling: Tyler's world was spinning. His semicircular canals — where the inner ear senses orientation in space — weren't working. "It was hell," he says. "I could stay upright only by fixating on distant objects." Struggling into work one day, he realized that the tongue display might be able to help.
+
+The team attached an accelerometer to the pulse generator, which they programmed to produce a tiny square. Stay upright and you feel the square in the center of your tongue; move to the right or left and the square moves in that direction, too. In this setup, the accelerometer is the sensor and the combination of mouthpiece and tongue is the transducer, the doorway into the brain.
+
+The researchers started testing the device on people with damaged inner ears. Not only did it restore their balance (presumably by giving them a data feed that was cleaner than the one coming from their semi circular canals) but the effects lasted even after they'd removed the mouthpiece — sometimes for hours or days.
+
+The success of that balance therapy, now in clinical trials, led Wicab researchers to start thinking about other kinds of data they could pipe to the mouthpiece. During a long brainstorm session, they wondered whether the tongue could actually augment sight for the visually impaired. I tried the prototype; in a white-walled office strewn with spare electronics parts, Wicab neuroscientist Aimee Arnoldussen hung a plastic box the size of a brick around my neck and gave me the mouthpiece. "Some people hold it still, and some keep it moving like a lollipop," she said. "It's up to you."
+
+Arnoldussen handed me a pair of blacked-out glasses with a tiny camera attached to the bridge. The camera was cabled to a laptop that would relay images to the mouthpiece. The look was pretty geeky, but the folks at the lab were used to it.
+
+She turned it on. Nothing happened.
+
+"Those buttons on the box?" she said. "They're like the volume controls for the image. You want to turn it up as high as you're comfortable."
+
+I cranked up the voltage of the electric shocks to my tongue. It didn't feel bad, actually — like licking the leads on a really weak 9-volt battery. Arnoldussen handed me a long white foam cylinder and spun my chair toward a large black rectangle painted on the wall. "Move the foam against the black to see how it feels," she said.
+
+I could see it. Feel it. Whatever — I could tell where the foam was. With Arnold ussen behind me carrying the laptop, I walked around the Wicab offices. I managed to avoid most walls and desks, scanning my head from side to side slowly to give myself a wider field of view, like radar. Thinking back on it, I don't remember the feeling of the electrodes on my tongue at all during my walkabout. What I remember are pictures: high-contrast images of cubicle walls and office doors, as though I'd seen them with my eyes. Tyler's group hasn't done the brain imaging studies to figure out why this is so — they don't know whether my visual cortex was processing the information from my tongue or whether some other region was doing the work.
+
+I later tried another version of the technology meant for divers. It displayed a set of directional glyphs on my tongue intended to tell them which way to swim. A flashing triangle on the right would mean "turn right," vertical bars moving right says "float right but keep going straight," and so on. At the University of Wisconsin lab, Tyler set me up with the prototype, a joystick, and a computer screen depicting a rudimentary maze. After a minute of bumping against the virtual walls, I asked Tyler to hide the maze window, closed my eyes, and successfully navigated two courses in 15 minutes. It was like I had something in my head magically telling me which way to go.
+
+In the 1970s, the story goes, a Navy flight surgeon named Angus Rupert went skydiving nude. And on his way down, in (very) free fall, he realized that with his eyes closed, the only way he could tell he was plummeting toward earth was from the feel of the wind against his skin (well, that and the flopping). He couldn't sense gravity at all.
+
+The experience gave Rupert the idea for the Tactical Situational Awareness System, a suitably macho name for a vest loaded with vibration elements, much like the feelSpace belt. But the TSAS doesn't tell you which way is north; it tells you which way is down.
+
+In an airplane, the human proprioceptive system gets easily confused. A 1-g turn could set the plane perpendicular to the ground but still feel like straight and level flight. On a clear day, visual cues let the pilot's brain correct for errors. But in the dark, a pilot who misreads the plane's instruments can end up in a death spiral. Between 1990 and 2004, 11 percent of US Air Force crashes — and almost a quarter of crashes at night — resulted from spatial disorientation.
+
+TSAS technology might fix that problem. At the University of Iowa's Operator Performance Laboratory, actually a hangar at a little airfield in Iowa City, director Tom Schnell showed me the next-generation garment, the Spatial Orientation Enhancement System.
+
+First we set a baseline. Schnell sat me down in front of OPL's elaborate flight simulator and had me fly a couple of missions over some virtual mountains, trying to follow a "path" in the sky. I was awful — I kept oversteering. Eventually, I hit a mountain.
+
+Then he brought out his SOES, a mesh of hard-shell plastic, elastic, and Velcro that fit over my arms and torso, strung with vibrating elements called tactile stimulators, or tactors. "The legs aren't working," Schnell said, "but they never helped much anyway."
+
+Flight became intuitive. When the plane tilted to the right, my right wrist started to vibrate — then the elbow, and then the shoulder as the bank sharpened. It was like my arm was getting deeper and deeper into something. To level off, I just moved the joystick until the buzzing stopped. I closed my eyes so I could ignore the screen.
+
+Finally, Schnell set the simulator to put the plane into a dive. Even with my eyes open, he said, the screen wouldn't help me because the visual cues were poor. But with the vest, I never lost track of the plane's orientation. I almost stopped noticing the buzzing on my arms and chest; I simply knew where I was, how I was moving. I pulled the plane out.
+
+When the original feelSpace experiment ended, Wächter, the sysadmin who started dreaming in north, says he felt lost; like the people wearing the weird goggles in those Austrian experiments, his brain had remapped in expectation of the new input. "Sometimes I would even get a phantom buzzing." He bought himself a GPS unit, which today he glances at obsessively. One woman was so dizzy and disoriented for her first two post-feelSpace days that her colleagues wanted to send her home from work. "My living space shrank quickly," says König. "The world appeared smaller and more chaotic."
+
+I wore a feelSpace belt for just a day or so, not long enough to have my brain remapped. In fact, my biggest worry was that as a dark-complexioned person wearing a wide belt bristling with wires and batteries, I'd be mistaken for a suicide bomber in charming downtown Osnabrück.
+
+The puzzling reactions of the longtime feelSpace wearers are characteristic of the problems researchers are bumping into as they play in the brain's cross-modal spaces. Nobody has done the imaging studies yet; the areas that integrate the senses are still unmapped.
+
+Success is still a long way off. The current incarnations of sensory prosthetics are bulky and low-resolution — largely impractical. What the researchers working on this technology are looking for is something transparent, something that users can (safely) forget they're wearing. But sensor technology isn't the main problem. The trick will be to finally understand more about how the brain processes the information, even while seeing the world with many different kinds of eyes.
