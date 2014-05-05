@@ -14,7 +14,6 @@ import org.mockito.ArgumentCaptor;
 import org.powermock.reflect.Whitebox;
 
 import static org.mockito.Mockito.*;
-
 import gui.UIMediator;
 import gui.UserList;
 import junit.framework.TestCase;
@@ -37,21 +36,37 @@ public class TestUIMediator extends TestCase {
 		assertEquals(uimed, UIMediator.getInstance());
 	}
 
-	public void testAddUserToModel() {
-		UserListModel userListModel = new UserListModel(uimed);
+	public void testAddUserToModel() throws InvocationTargetException, InterruptedException {
+		final UserListModel userListModel = new UserListModel(uimed);
 		assertEquals(0, userListModel.size());
-		uimed.addUser("A");
-		assertEquals(1, userListModel.size());
+		uimed.userOn("A");
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				assertEquals(1, userListModel.size());
+			};
+		});
 	}
 
-	public void testRemoveUserFromModel() {
-		UserListModel userListModel = new UserListModel(uimed);
-		uimed.addUser("A");
-		assertEquals(1, userListModel.size());
-		uimed.removeUser("NoOne");
-		assertEquals(1, userListModel.size());
-		uimed.removeUser("A");
-		assertEquals(0, userListModel.size());
+	public void testRemoveUserFromModel() throws InvocationTargetException, InterruptedException {
+		final UserListModel userListModel = new UserListModel(uimed);
+		uimed.userOn("A");
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				assertEquals(1, userListModel.size());
+			};
+		});
+		uimed.userOff("NoOne");
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				assertEquals(1, userListModel.size());
+			};
+		});
+		uimed.userOff("A");
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				assertEquals(0, userListModel.size());
+			};
+		});
 	}
 
 	/* Test that uiMediator does not know about usernames, and

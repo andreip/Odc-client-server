@@ -108,7 +108,7 @@ public class UIMediator {
 
     private void removeUser(String username) {
         if (this.userListModel != null) {
-            this.userListModel.remove(this.userListModel.indexOf(username));
+            this.userListModel.removeElement(username);
         }
     }
 
