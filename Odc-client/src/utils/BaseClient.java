@@ -84,11 +84,8 @@ public class BaseClient implements Runnable {
 					}
 					this.pendingChanges.clear();
 				}
-//				logger.debug("Waiting for a new selection.");
-
 				// Wait for an event one of the registered channels
 				this.selector.select();
-//				logger.debug("Selector selected something.");
 
 				// Iterate over the set of keys for which events are available
 				Iterator selectedKeys = this.selector.selectedKeys().iterator();
