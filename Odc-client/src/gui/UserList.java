@@ -37,9 +37,10 @@ public class UserList extends JList<String> {
                     lastSelectedIndex = index;
                     String userName = (String) UserList.this.getSelectedValue();
 
-                    /* AVOID a bug with this when user exists. */
-                    if (userName.equals("null"))
-                        return;
+                    if (userName == null) {
+                    	uiMediator.setCurrentUserFiles(null);
+                    	return;
+                    }
 
                     /* Make WebService request for user files. */
                     try {

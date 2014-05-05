@@ -1,5 +1,6 @@
 package webservice_client;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import gui.UIMediator;
 
 import java.io.FileInputStream;
@@ -13,18 +14,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
-import javax.swing.SwingUtilities;
 import javax.swing.tree.TreeNode;
+
+import main.Mediator;
 
 import org.apache.log4j.Logger;
 
 import utils.BaseClient;
 import utils.BaseRspHandler;
 import utils.SerializationHelper;
-
-import main.Mediator;
-
-import static java.util.concurrent.TimeUnit.*;
 
 public class WebServiceClient {
 	static Logger logger = Logger.getLogger(WebServiceClient.class);
@@ -95,7 +93,7 @@ public class WebServiceClient {
 	}
 
 	public static void getUserTreeNode(final String name, final UIMediator uimed) throws IOException {
-		System.out.println("Sending user tree node req for " + name);
+		logger.info("Sending user tree node req for " + name);
 		byte[] request = ("FILES REQ " + name).getBytes();
 
 		/* A special handler that will deserialize in TreeNode back. */

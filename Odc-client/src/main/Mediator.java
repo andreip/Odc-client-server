@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -111,7 +112,10 @@ public class Mediator implements Runnable {
 
     public void newIncomingTransfer(TransferInfo ti) {
     	logger.debug("New incoming transfer.");
-    	Pair netInfo = users.get(ti.userFrom);
+    	Pair netInfo = null;
+    	synchronized (users) {
+    		netInfo = users.get(ti.userFrom);
+		}
         try {
         	Transfer t = new Transfer(this, InetAddress.getByName((String) netInfo.first),
 			                          Integer.parseInt(netInfo.second.toString()));
@@ -130,33 +134,39 @@ public class Mediator implements Runnable {
      * in the interface, using UIMediator.
      */
 	public void updateUsersList(Map<String, Entry<String, Integer>> users) {
-		boolean updated = false;
-		/* Update list of mediator users with received one. */
-		for (Entry<String, Entry<String, Integer>> e : users.entrySet()) {
-			boolean isNew = ! this.users.containsKey(e.getKey());
+		synchronized (this.users) {
+			boolean updated = false;
+			/* Update list of mediator users with received one. */
+			for (Entry<String, Entry<String, Integer>> e : users.entrySet()) {
+				boolean isNew = ! this.users.containsKey(e.getKey());
 
-			/* Override user details every time, some may change over time. */
-			this.users.put(e.getKey(), new Pair(e.getValue().getKey(),
-			                                    e.getValue().getValue()));
-			/* Add new user to the interface too. */
-			if (isNew && !e.getKey().equals(this.username)) {
-				uiMediator.userOn(e.getKey());
-				updated = true;
+				/* Override user details every time, some may change over time. */
+				this.users.put(e.getKey(), new Pair(e.getValue().getKey(),
+				                                    e.getValue().getValue()));
+				/* Add new user to the interface too. */
+				if (isNew && !e.getKey().equals(this.username)) {
+					uiMediator.userOn(e.getKey());
+					updated = true;
+				}
 			}
+
+			/* Final check on interface users, to see if every one is in
+			 * the received list of users. Some of the users may have
+			 * gone offline. Use an iterator as we need to delete from
+			 * the list of users stored in the mediator as well.
+			 */
+			Iterator<Entry<String, Pair>> iter = this.users.entrySet().iterator();
+		    while (iter.hasNext()) {
+		    	String username = iter.next().getKey();
+		    	if (!users.containsKey(username)) {
+					uiMediator.userOff(username);
+					iter.remove();
+					updated = true;
+				}
+		    }
+			if (updated)
+				uiMediator.updateState("Receiving user list...");
 		}
-
-		/* Final check on interface users, to see if every one is in
-		 * the received list of users. Some of the users may have
-		 * gone offline.
-		 */
-		for (Entry<String, Pair> e : this.users.entrySet())
-			/* Remove user from UI if not found in received users list. */
-			if (!users.containsKey(e.getKey())) {
-				uiMediator.userOff(e.getKey());
-				updated = true;
-			}
-		if (updated)
-			uiMediator.updateState("Receiving user list...");
 	}
 
 	@Override
@@ -166,7 +176,7 @@ public class Mediator implements Runnable {
 			 * end until the thread closes.
 			 */
 			WebServiceClient.startPollingForUsers(this);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.warn(e.toString());
 		}
 
@@ -175,8 +185,7 @@ public class Mediator implements Runnable {
 			try {
 				WebServiceClient.sendUserTreeNode(this.username, root);
 			} catch (IOException e) {
-				logger.error("Unable to send file list to server");
-				e.printStackTrace();
+				logger.warn("Unable to send file list to server");
 			}
 			try {
 				Thread.sleep(2000);

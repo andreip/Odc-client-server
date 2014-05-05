@@ -90,7 +90,7 @@ public class UIMediator {
     	return "";
     }
 
-    public void addUser(String username) {
+    private void addUser(String username) {
         if (this.userListModel != null) {
             this.userListModel.addElement(username);
         }
@@ -106,28 +106,39 @@ public class UIMediator {
         return rootNode;
     }
 
-    public void removeUser(String username) {
+    private void removeUser(String username) {
         if (this.userListModel != null) {
-            this.userListModel.removeElement(username);
+            this.userListModel.remove(this.userListModel.indexOf(username));
         }
     }
 
     public void setCurrentUserFiles(TreeNode root) {
         if (this.userFilesTreeModel != null) {
             this.userFilesTreeModel.setRoot(root);
-            this.updateState("Receiving file list from " + root.toString() + "...");
+            if (root != null)
+            	this.updateState("Receiving file list from " + root.toString() + "...");
         }
     }
 
-    public void userOn(String username) {
+    public void userOn(final String username) {
         if (this.userListModel != null) {
-            this.addUser(username);
+        	SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+		            UIMediator.this.addUser(username);
+				}
+			});
         }
     }
 
-    public void userOff(String username) {
+    public void userOff(final String username) {
         if (this.userListModel != null) {
-            this.removeUser(username);
+        	SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+		            UIMediator.this.removeUser(username);
+				}
+			});
         }
     }
 
