@@ -30,6 +30,7 @@ public class TestUIMediator extends TestCase {
 		medMock = mock(Mediator.class);
 		uimed = UIMediator.getInstance();
 		uimed.registerMediator(medMock);
+		uimed.registerTransfersTableModel(mock(TransfersTableModel.class));
 	}
 
 	public void testUIMediatorSingleton() {
@@ -106,7 +107,6 @@ public class TestUIMediator extends TestCase {
 		final ArgumentCaptor<TransferInfo> arg = ArgumentCaptor.forClass(TransferInfo.class);
 		uimed.newIncomingTransfer("chris/path/to/file");
 
-		verify(medMock, times(0)).newIncomingTransfer(arg.capture());
 		SwingUtilities.invokeAndWait(new Runnable() {
 			public void run() {
 				verify(medMock, times(1)).newIncomingTransfer(arg.capture());
