@@ -133,7 +133,10 @@ public class WebService implements Runnable {
 		this.userFiles.remove(name);
 	}
 	public byte[] getUserFiles(String name) {
-		return this.userFiles.get(name);
+		if (this.userFiles.containsKey(name)) {
+			return this.userFiles.get(name);
+		}
+		return null;
 	}
 	public void addUserFiles(String name, byte[] root) {
 		this.userFiles.put(name, root);
@@ -225,5 +228,12 @@ public class WebService implements Runnable {
 		serverChannel.register(socketSelector, SelectionKey.OP_ACCEPT);
 
 		return socketSelector;
+	}
+	
+	public void close() {
+		try {
+			this.selector.close();
+			this.serverChannel.close();
+		} catch (IOException e) {}
 	}
 }
