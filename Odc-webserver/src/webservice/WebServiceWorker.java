@@ -101,7 +101,7 @@ public class WebServiceWorker implements Runnable {
 			} else if(strs[0].equals("FILES")) {
 				if (strs[1].equals("REQ")) {
 					String userName = strs[2];
-					System.out.println("Server received FILES REQ for " + userName);
+					logger.debug("Server received FILES REQ for " + userName);
 					response = dataEvent.server.getUserFiles(userName);
 				}
 			}

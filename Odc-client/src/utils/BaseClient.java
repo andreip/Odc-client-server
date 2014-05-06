@@ -208,7 +208,7 @@ public class BaseClient implements Runnable {
 			socketChannel.finishConnect();
 		} catch (IOException e) {
 			// Cancel the channel's registration with our selector
-			System.out.println(e);
+			logger.warn("Error whilst finishing connection. Error was: " + e.toString() + ". Cancel attempt.");
 			key.cancel();
 			return;
 		}
