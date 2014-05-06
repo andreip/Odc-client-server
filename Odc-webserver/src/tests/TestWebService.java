@@ -45,6 +45,13 @@ public class TestWebService extends TestCase {
 		webService.removeUser("ana");
 		assertEquals("USERS", webService.getUsers());
 	}
+	
+	public void testRemoveNonExistingUser() {
+		webService.addUser("ana", "localhost", 9000);
+		assertEquals("USERS ana localhost 9000", webService.getUsers());
+		webService.removeUser("ion");
+		assertEquals("USERS ana localhost 9000", webService.getUsers());
+	}
 
 	public void testGetUserFiles() {
 		assertEquals(null, webService.getUserFiles("ana"));
@@ -62,5 +69,13 @@ public class TestWebService extends TestCase {
 		assertEquals(expected, webService.getUserFiles("ana"));
 		webService.removeUserFiles("ana");
 		assertEquals(null, webService.getUserFiles("ana"));
+	}
+	
+	public void testRemoveUserFilesForNonExistingUser() {
+		byte[] expected = "test".getBytes();
+		webService.addUserFiles("ana", expected);
+		assertEquals(expected, webService.getUserFiles("ana"));
+		webService.removeUserFiles("ion");
+		assertEquals(null, webService.getUserFiles("ion"));
 	}
 }
